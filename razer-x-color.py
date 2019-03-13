@@ -29,7 +29,6 @@ sys.stdout.write(str(b) + "\n\n")
 device_manager = DeviceManager()
 
 print("Found {} Razer devices".format(len(device_manager.devices)))
-print()
 
 # Disable daemon effect syncing.
 # Without this, the daemon will try to set the lighting effect to every device.
