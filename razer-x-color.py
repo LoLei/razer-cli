@@ -13,6 +13,9 @@ output = subprocess.check_output(
         "xrdb -query | grep \"*color1:\" | awk -F '#' '{print $2}'", 
         shell=True)
 rgb = output.decode()
+# Colors could also be read from ~/.cache/wal/colors.json, but this way it
+# doesn't depend on pywal, in case the X colors are set from a different origin
+
 print("Found color1 RGB: {}".format(rgb))
 
 print("In decimal: ")
