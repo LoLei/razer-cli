@@ -8,5 +8,5 @@ which sets this `color1` as its primary color. See for example
 [here](https://github.com/LoLei/dotfiles/blob/master/exec-wal.sh).
 
 ## Dependencies
-* [openrazer](https://github.com/openrazer/openrazer)
-* [xrdb](https://www.archlinux.org/packages/extra/x86_64/xorg-xrdb/)
+* [`openrazer`](https://github.com/openrazer/openrazer)
+* [`xrdb`](https://www.archlinux.org/packages/extra/x86_64/xorg-xrdb/)
