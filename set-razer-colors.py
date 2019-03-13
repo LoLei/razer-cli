@@ -13,7 +13,7 @@ output = subprocess.check_output(
         "xrdb -query | grep \"*color1:\" | awk -F '#' '{print $2}'", 
         shell=True)
 rgb = output.decode()
-print("RGB: {}".format(rgb))
+print("Found color1 RGB: {}".format(rgb))
 
 print("In decimal: ")
 r = int(rgb[0:2], 16)
