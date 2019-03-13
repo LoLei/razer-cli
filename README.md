@@ -14,6 +14,7 @@ In the meantime:
 git clone `https://github.com/LoLei/razer-x-color.git`
 cd razer-x-color
 # Execute wal before so a colorscheme is generated
+# if there are no colors defined in the X resources
 python razer-x-color.py
 ```
 Example in action 
