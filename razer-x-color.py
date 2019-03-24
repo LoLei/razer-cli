@@ -37,9 +37,9 @@ print("Found {} Razer devices".format(len(device_manager.devices)))
 # Without this, the daemon will try to set the lighting effect to every device.
 device_manager.sync_effects = False
 
-# Iterate over each device and set the wave effect
+# Iterate over each device and set the effect
 for device in device_manager.devices:
     print("Setting {} to static".format(device.name))
 
-    # Set the effect to static, requires colors in 0-255 range
+    # Set the effect, requires colors in 0-255 range
     device.fx.static(r, g, b)
