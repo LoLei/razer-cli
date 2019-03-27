@@ -9,15 +9,14 @@ import argparse
 # ARGS
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--effect", help="increase output verbosity",
+parser.add_argument("--effect", help="set effect",
                     action="store")
+parser.add_argument("-v", "--verbose", help="increase output verbosity",
+                    action="store_true")
 args = parser.parse_args()
 
-if args.effect:
-    print("Effect to use: {}".format(args.effect))
-
-
-print("Starting Razer colors script...")
+if args.verbose:
+    print("Starting Razer colors script...")
 
 # -----------------------------------------------------------------------------
 # COLORS
@@ -29,22 +28,24 @@ rgb = output.decode()
 # Colors could also be read from ~/.cache/wal/colors.json, but this way it
 # doesn't depend on pywal, in case the X colors are set from a different origin
 
-print("Found color1 RGB: {}".format(rgb))
-
-print("In decimal: ")
 r = int(rgb[0:2], 16)
-sys.stdout.write(str(r) + " ")
 g = int(rgb[2:4], 16)
-sys.stdout.write(str(g) + " ")
 b = int(rgb[4:6], 16)
-sys.stdout.write(str(b) + "\n\n")
+
+if args.verbose:
+    print("Found color1 RGB: {}".format(rgb))
+    print("In decimal: ")
+    sys.stdout.write(str(r) + " ")
+    sys.stdout.write(str(g) + " ")
+    sys.stdout.write(str(b) + "\n\n")
 
 # -----------------------------------------------------------------------------
 # DEVICES
 # Create a DeviceManager. This is used to get specific devices
 device_manager = DeviceManager()
 
-print("Found {} Razer devices".format(len(device_manager.devices)))
+if args.verbose:
+    print("Found {} Razer devices".format(len(device_manager.devices)))
 
 # Disable daemon effect syncing.
 # Without this, the daemon will try to set the lighting effect to every device.
@@ -52,10 +53,22 @@ device_manager.sync_effects = False
 
 # Iterate over each device and set the wave effect
 for device in device_manager.devices:
-    print("Setting {} to static".format(device.name))
 
-    if (args.effect == "static"):
-        print("Using static")
+    if args.verbose:
+        print("Setting {} to static".format(device.name))
 
-    # Set the effect to static, requires colors in 0-255 range
-    device.fx.static(r, g, b)
+    if not args.effect:
+        print("No effect set, using default effect: static. Use --effect to set\
+                a custom effect.")
+        # Default effect is static, if no argument is specified
+        # Set the effect to static, requires colors in 0-255 range
+        device.fx.static(r, g, b)
+
+    elif (args.effect == "static"):
+        print("Using effect: static")
+        # Set the effect to static, requires colors in 0-255 range
+        device.fx.static(r, g, b)
+    else:
+        print("Unkown effect. Available effects: static, wave, TODO")
+
+
