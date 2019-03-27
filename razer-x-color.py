@@ -10,6 +10,8 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--effect", help="set effect",
+                    choices=["static","wave","todo"],
+                    default="static",
                     action="store")
 parser.add_argument("-v", "--verbose", help="increase output verbosity",
                     action="store_true")
@@ -57,18 +59,8 @@ for device in device_manager.devices:
     if args.verbose:
         print("Setting {} to static".format(device.name))
 
-    if not args.effect:
-        print("No effect set, using default effect: static. Use --effect to set\
-                a custom effect.")
-        # Default effect is static, if no argument is specified
-        # Set the effect to static, requires colors in 0-255 range
-        device.fx.static(r, g, b)
-
-    elif (args.effect == "static"):
+    if (args.effect == "static"):
         print("Using effect: static")
         # Set the effect to static, requires colors in 0-255 range
         device.fx.static(r, g, b)
-    else:
-        print("Unkown effect. Available effects: static, wave, TODO")
-
 
