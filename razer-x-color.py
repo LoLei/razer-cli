@@ -3,6 +3,19 @@
 import subprocess, sys
 from openrazer.client import DeviceManager
 from openrazer.client import constants as razer_constants
+import argparse
+
+# -----------------------------------------------------------------------------
+# ARGS
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--effect", help="increase output verbosity",
+                    action="store")
+args = parser.parse_args()
+
+if args.effect:
+    print("Effect to use: {}".format(args.effect))
+
 
 print("Starting Razer colors script...")
 
@@ -40,6 +53,9 @@ device_manager.sync_effects = False
 # Iterate over each device and set the wave effect
 for device in device_manager.devices:
     print("Setting {} to static".format(device.name))
+
+    if (args.effect == "static"):
+        print("Using static")
 
     # Set the effect to static, requires colors in 0-255 range
     device.fx.static(r, g, b)
