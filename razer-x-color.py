@@ -9,7 +9,7 @@ import argparse
 # ARGS
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--effect", help="set effect",
+parser.add_argument("--effect", help="set effect (default: %(default)s)",
                     choices=["static","wave","todo"],
                     default="static",
                     action="store")
