@@ -33,8 +33,6 @@ args = parser.parse_args()
 if args.verbose:
     print("Starting Razer colors script...")
 
-print(args.color)
-
 # -----------------------------------------------------------------------------
 # COLORS
 # Get current primary color used by pywal
