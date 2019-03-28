@@ -5,12 +5,15 @@ from openrazer.client import DeviceManager
 from openrazer.client import constants as razer_constants
 import argparse
 
+# TODO: Pivot maybe, this thing now almost functions as a CLI for Razer, just
+# add the colors as an additional input argument
+
 # -----------------------------------------------------------------------------
 # ARGS
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--effect", help="set effect (default: %(default)s)",
-                    choices=["static","wave","todo"],
+                    choices=["static","breath","reactive", "ripple"],
                     default="static",
                     action="store")
 parser.add_argument("-v", "--verbose", help="increase output verbosity",
@@ -55,12 +58,24 @@ device_manager.sync_effects = False
 
 # Iterate over each device and set the wave effect
 for device in device_manager.devices:
+    # TODO: Check if device supports effect, use static as fallback
 
     if args.verbose:
-        print("Setting {} to static".format(device.name))
+        print("Setting device: {}".format(device.name))
 
     if (args.effect == "static"):
         print("Using effect: static")
         # Set the effect to static, requires colors in 0-255 range
         device.fx.static(r, g, b)
+
+    elif (args.effect == "breath"):
+        print("Using effect: breath")
+        device.fx.breath_single(r, g, b)
+
+    elif (args.effect == "reactive"):
+        print("Using effect: reactive")
+        times = [razer_constants.REACTIVE_500MS, razer_constants.REACTIVE_1000MS,
+        razer_constants.REACTIVE_1500MS, razer_constants.REACTIVE_2000MS]
+        # TODO: Add choice for time maybe
+        device.fx.reactive(r, g, b, times[1])
 
