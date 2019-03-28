@@ -13,16 +13,27 @@ import argparse
 # ARGS
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--effect", help="set effect (default: %(default)s)",
+
+parser.add_argument("-e", "--effect",
+                    help="set effect (default: %(default)s)",
                     choices=["static","breath","reactive", "ripple"],
                     default="static",
                     action="store")
-parser.add_argument("-v", "--verbose", help="increase output verbosity",
+
+parser.add_argument("-v", "--verbose",
+                    help="increase output verbosity",
                     action="store_true")
+
+parser.add_argument('-c','--color', nargs='+',
+                    help='choose color (default: X color1)',
+                    type=int)
+
 args = parser.parse_args()
 
 if args.verbose:
     print("Starting Razer colors script...")
+
+print(args.color)
 
 # -----------------------------------------------------------------------------
 # COLORS
