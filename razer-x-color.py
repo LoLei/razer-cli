@@ -56,7 +56,7 @@ if args.verbose:
 # Without this, the daemon will try to set the lighting effect to every device.
 device_manager.sync_effects = False
 
-# Iterate over each device and set the wave effect
+# Iterate over each device and set the effect
 for device in device_manager.devices:
     # TODO: Check if device supports effect, use static as fallback
 
@@ -77,5 +77,8 @@ for device in device_manager.devices:
         times = [razer_constants.REACTIVE_500MS, razer_constants.REACTIVE_1000MS,
         razer_constants.REACTIVE_1500MS, razer_constants.REACTIVE_2000MS]
         # TODO: Add choice for time maybe
-        device.fx.reactive(r, g, b, times[1])
+        device.fx.reactive(r, g, b, times[3])
 
+    elif (args.effect == "ripple"):
+        print("Using effect: ripple")
+        device.fx.ripple(r, g, b, razer_constants.RIPPLE_REFRESH_RATE)
