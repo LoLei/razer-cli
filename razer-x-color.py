@@ -92,8 +92,7 @@ def list_devices(device_manager):
     https://github.com/openrazer/openrazer/blob/master/examples/list_devices.py
     """
 
-    if args.verbose:
-        print("Found {} Razer devices".format(len(device_manager.devices)))
+    print("Found {} Razer devices".format(len(device_manager.devices)))
 
     # Iterate over each device and pretty out some standard information about each
     for device in device_manager.devices:
