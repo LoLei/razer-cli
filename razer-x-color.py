@@ -7,23 +7,19 @@ __author__ = "Lorenz Leitner"
 __version__ = "0.1.0"
 __license__ = "MIT" # TODO: Change
 
-import subprocess, sys, os
+# Libraries
+import subprocess, sys
 from openrazer.client import DeviceManager
 from openrazer.client import constants as razer_constants
 import argparse
-import json
 
-def hex_to_decimal(hex_color):
-    r = int(hex_color[0:2], 16)
-    g = int(hex_color[2:4], 16)
-    b = int(hex_color[4:6], 16)
-
-    return r, g, b
+# Own
+import util
 
 def parse_color_argument(color):
     # Hex: Just one input argument
     rgb = color[0]
-    r, g, b = hex_to_decimal(rgb)
+    r, g, b = util.hex_to_decimal(rgb)
 
     # RGB: Three base10 input arguments
     # TODO
@@ -38,7 +34,7 @@ def get_x_color():
             "xrdb -query | grep \"*color1:\" | awk -F '#' '{print $2}'", 
             shell=True)
     rgb = output.decode()
-    r, g, b = hex_to_decimal(rgb)
+    r, g, b = util.hex_to_decimal(rgb)
 
     return r, g, b
 
@@ -116,49 +112,9 @@ def list_devices(device_manager):
             print("   capabilities: {}".format(device.capabilities))
     print()
 
-def write_settings_to_file(device, effect, color):
-    """ Save settings to a file for possible later retrieval """
-
-    # TODO: Move file somehwere else like ~/.cache
-    # Handle non-existing file
-    if not os.path.isfile('razer-cli-settings.json'):
-        a = []
-        with open('razer-cli-settings.json', mode='w') as file:
-            json.dump(a, file)
-
-    # Check if there already exists an entry for this device, if yes update it
-    found_existing_settings = False
-    with open('razer-cli-settings.json', 'r') as file:
-         json_data = json.load(file)
-         for item in json_data:
-             if (item['device_name'] == device.name):
-                 found_existing_settings = True
-                 if args.verbose:
-                     print("Found existing settings for device: "
-                             "{}".format(item['device_name']))
-                 item['color'] = color
-                 item['effect'] = effect
-
-    # Update existing entry
-    if found_existing_settings:
-        if args.verbose:
-            print("Overwriting existing settings")
-        with open('razer-cli-settings.json', 'w') as file:
-            json.dump(json_data, file, indent=2)
-    # If no existing entry was found, append a new entry
-    else:
-        print("Adding new settings entry")
-        used_settings = {}
-        used_settings['device_name'] = device.name
-        used_settings['color'] = color
-        used_settings['effect'] = effect
-        with open('razer-cli-settings.json', mode='w') as file:
-            json_data.append(used_settings)
-            json.dump(json_data, file, indent=2)
-
 def set_effect_to_device(device, effect, color):
     # Save used settings for this device to a file
-    write_settings_to_file(device, effect, color)
+    util.write_settings_to_file(device, effect, color)
 
     r = color[0]
     g = color[1]
