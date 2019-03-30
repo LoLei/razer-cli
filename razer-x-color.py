@@ -156,7 +156,7 @@ def write_settings_to_file(device, effect, color):
             json_data.append(used_settings)
             json.dump(json_data, file, indent=2)
 
-def set_effect_to_device(device_manager, device, effect, color):
+def set_effect_to_device(device, effect, color):
     # Save used settings for this device to a file
     write_settings_to_file(device, effect, color)
 
@@ -207,7 +207,7 @@ def set_effect_to_all_devices(device_manager, input_effect, color):
                 print("Device does not support chosen effect. Using static"
                         " as fallback...")
 
-        set_effect_to_device(device_manager, device, effect_to_use, color)
+        set_effect_to_device(device, effect_to_use, color)
 
 def main():
     """ Main entry point of the app """
