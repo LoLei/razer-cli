@@ -41,19 +41,15 @@ def get_x_color():
 
     return r, g, b
 
-def main(args):
-    """ Main entry point of the app """
-
-    # -------------------------------------------------------------------------
-    # COLORS
+def set_color(color):
 
     r = 0
     g = 0
     b = 0
 
-    if(args.color):
+    if(color):
         # Set colors from input argument
-        r, g, b = parse_color_argument(args.color)
+        r, g, b = parse_color_argument(color)
 
     else:
         # Use X colors as fallback if no color argument is set
@@ -66,6 +62,17 @@ def main(args):
         sys.stdout.write(str(r) + " ")
         sys.stdout.write(str(g) + " ")
         sys.stdout.write(str(b) + "\n\n")
+
+    return r, g, b
+
+
+def main():
+    """ Main entry point of the app """
+
+    # -------------------------------------------------------------------------
+    # COLORS
+
+    r, g, b = set_color(args.color)
 
     # -------------------------------------------------------------------------
     # DEVICES
@@ -92,7 +99,7 @@ def main(args):
             # Set the effect to static, requires colors in 0-255 range
             device.fx.static(r, g, b)
 
-        elif (args.effect == "breath"):
+        elif (args.effect == "breath_single"):
             # TODO: Maybe add 'breath_dual' with primary and secondary color
             device.fx.breath_single(r, g, b)
 
@@ -115,7 +122,7 @@ if __name__ == "__main__":
 
     parser.add_argument("-e", "--effect",
                         help="set effect (default: %(default)s)",
-                        choices=["static","breath","reactive", "ripple"],
+                        choices=["static","breath_single","reactive", "ripple"],
                         default="static",
                         action="store")
 
@@ -132,4 +139,4 @@ if __name__ == "__main__":
     if args.verbose:
         print("Starting Razer colors script...")
 
-    main(args)
+    main()
