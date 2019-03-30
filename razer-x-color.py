@@ -25,8 +25,8 @@ parser.add_argument("-v", "--verbose",
                     action="store_true")
 
 parser.add_argument('-c','--color', nargs='+',
-                    help='choose color (default: X color1)',
-                    type=int)
+                    help="choose color (default: X color1), use one argument "
+                         "for hex, or three for base10 rgb")
 
 args = parser.parse_args()
 
@@ -35,17 +35,33 @@ if args.verbose:
 
 # -----------------------------------------------------------------------------
 # COLORS
-# Get current primary color used by pywal
-output = subprocess.check_output(
-        "xrdb -query | grep \"*color1:\" | awk -F '#' '{print $2}'", 
-        shell=True)
-rgb = output.decode()
-# Colors could also be read from ~/.cache/wal/colors.json, but this way it
-# doesn't depend on pywal, in case the X colors are set from a different origin
 
-r = int(rgb[0:2], 16)
-g = int(rgb[2:4], 16)
-b = int(rgb[4:6], 16)
+r = 0
+g = 0
+b = 0
+
+
+if(args.color):
+    # Set colors from input argument
+    print(args.color)
+else:
+    # Use X colors as fallback if no color argument is set
+    # TODO: Maybe also add argument to pull colors from
+    # ~/.cache/wal.colors.jason
+    # Get current primary color used by pywal
+    output = subprocess.check_output(
+            "xrdb -query | grep \"*color1:\" | awk -F '#' '{print $2}'", 
+            shell=True)
+    rgb = output.decode()
+    # Colors could also be read from ~/.cache/wal/colors.json, but this way it
+    # doesn't depend on pywal, in case the X colors are set from a different origin
+
+    r = int(rgb[0:2], 16)
+    g = int(rgb[2:4], 16)
+    b = int(rgb[4:6], 16)
+
+
+
 
 if args.verbose:
     print("Found color1 RGB: {}".format(rgb))
