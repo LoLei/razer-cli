@@ -11,6 +11,7 @@ import subprocess, sys
 from openrazer.client import DeviceManager
 from openrazer.client import constants as razer_constants
 import argparse
+import json
 
 def hex_to_decimal(hex_color):
     r = int(hex_color[0:2], 16)
@@ -115,11 +116,40 @@ def list_devices(device_manager):
             print("   capabilities: {}".format(device.capabilities))
     print()
 
-def set_effect_to_all_devices(device_manager, input_effect, color):
-    """ Set one effect to all connected devices, if they support that effect """
+def set_effect_to_device(device_manager, device, effect, color):
     r = color[0]
     g = color[1]
     b = color[2]
+
+    if (effect == "static"):
+        # Set the effect to static, requires colors in 0-255 range
+        device.fx.static(r, g, b)
+
+    elif (effect == "breath_single"):
+        # TODO: Maybe add 'breath_dual' with primary and secondary color
+        device.fx.breath_single(r, g, b)
+
+    elif (effect == "reactive"):
+        times = [razer_constants.REACTIVE_500MS, razer_constants.REACTIVE_1000MS,
+        razer_constants.REACTIVE_1500MS, razer_constants.REACTIVE_2000MS]
+        # TODO: Add choice for time maybe
+        device.fx.reactive(r, g, b, times[3])
+
+    elif (effect == "ripple"):
+        device.fx.ripple(r, g, b, razer_constants.RIPPLE_REFRESH_RATE)
+
+    else:
+        print("Effect is supported by device but not yet implemented.\n"
+                "Consider opening a PR:\n"
+                "https://github.com/LoLei/razer-x-color/pulls")
+        return
+
+    print("Setting device: {} to effect {}".format(device.name,
+        effect))
+
+
+def set_effect_to_all_devices(device_manager, input_effect, color):
+    """ Set one effect to all connected devices, if they support that effect """
 
     # Iterate over each device and set the effect
     for device in device_manager.devices:
@@ -134,31 +164,7 @@ def set_effect_to_all_devices(device_manager, input_effect, color):
                 print("Device does not support chosen effect. Using static"
                         " as fallback...")
 
-        if (effect_to_use == "static"):
-            # Set the effect to static, requires colors in 0-255 range
-            device.fx.static(r, g, b)
-
-        elif (effect_to_use == "breath_single"):
-            # TODO: Maybe add 'breath_dual' with primary and secondary color
-            device.fx.breath_single(r, g, b)
-
-        elif (effect_to_use == "reactive"):
-            times = [razer_constants.REACTIVE_500MS, razer_constants.REACTIVE_1000MS,
-            razer_constants.REACTIVE_1500MS, razer_constants.REACTIVE_2000MS]
-            # TODO: Add choice for time maybe
-            device.fx.reactive(r, g, b, times[3])
-
-        elif (effect_to_use == "ripple"):
-            device.fx.ripple(r, g, b, razer_constants.RIPPLE_REFRESH_RATE)
-
-        else:
-            print("Effect is supported by device but not yet implemented.\n"
-                    "Consider opening a PR:\n"
-                    "https://github.com/LoLei/razer-x-color/pulls")
-            return
-
-        print("Setting device: {} to effect {}".format(device.name,
-            effect_to_use))
+        set_effect_to_device(device_manager, device, effect_to_use, color)
 
 def main():
     """ Main entry point of the app """
