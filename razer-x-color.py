@@ -116,8 +116,10 @@ def list_devices(device_manager):
             print("   capabilities: {}".format(device.capabilities))
     print()
 
-def set_effect_to_device(device_manager, device, effect, color):
+def write_settings_to_file(device, effect, color):
+    """ Save settings to a file for possible later retrieval """
 
+    # TODO: Move file somehwere else like ~/.cache
     # Handle non-existing file
     if not os.path.isfile('razer-cli-settings.json'):
         a = []
@@ -129,20 +131,23 @@ def set_effect_to_device(device_manager, device, effect, color):
     with open('razer-cli-settings.json', 'r') as file:
          json_data = json.load(file)
          for item in json_data:
-             print(item)
              if (item['device_name'] == device.name):
                  found_existing_settings = True
-                 print("Found existing settings for device: "
-                         "{}".format(item['device_name']))
+                 if args.verbose:
+                     print("Found existing settings for device: "
+                             "{}".format(item['device_name']))
                  item['color'] = color
                  item['effect'] = effect
 
     # Update existing entry
     if found_existing_settings:
+        if args.verbose:
+            print("Overwriting existing settings")
         with open('razer-cli-settings.json', 'w') as file:
             json.dump(json_data, file, indent=2)
     # If no existing entry was found, append a new entry
     else:
+        print("Adding new settings entry")
         used_settings = {}
         used_settings['device_name'] = device.name
         used_settings['color'] = color
@@ -151,6 +156,9 @@ def set_effect_to_device(device_manager, device, effect, color):
             json_data.append(used_settings)
             json.dump(json_data, file, indent=2)
 
+def set_effect_to_device(device_manager, device, effect, color):
+    # Save used settings for this device to a file
+    write_settings_to_file(device, effect, color)
 
     r = color[0]
     g = color[1]
