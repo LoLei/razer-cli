@@ -30,7 +30,7 @@ optional arguments:
                         set effect (default: static)
   -v, --verbose         increase output verbosity
 ```
-
+<sup>This might be out of date, just run it with `-h` yourself to see the newest options.</sup>  
 Example in action 
 [here](https://github.com/LoLei/dotfiles/blob/master/exec-wal.sh).
 
