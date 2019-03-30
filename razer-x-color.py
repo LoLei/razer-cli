@@ -12,10 +12,6 @@ from openrazer.client import DeviceManager
 from openrazer.client import constants as razer_constants
 import argparse
 
-# TODO: Pivot maybe, this thing now almost functions as a CLI for Razer, just
-# add the colors as an additional input argument, use Xresources colors as
-# fallback
-
 def main(args):
     """ Main entry point of the app """
     print("hello world")
@@ -27,12 +23,19 @@ def main(args):
     g = 0
     b = 0
 
-
     if(args.color):
         # Set colors from input argument
         print(args.color)
 
-        # Hex
+        # Hex: Just one input argument
+        rgb = args.color[0]
+
+        r = int(rgb[0:2], 16)
+        g = int(rgb[2:4], 16)
+        b = int(rgb[4:6], 16)
+
+        # RGB: Three base10 input arguments
+        # TODO
 
     else:
         # Use X colors as fallback if no color argument is set
@@ -51,7 +54,7 @@ def main(args):
         b = int(rgb[4:6], 16)
 
     if args.verbose:
-        print("Found color1 RGB: {}".format(rgb))
+        print("Parsed RGB: {}".format(rgb))
         print("In decimal: ")
         sys.stdout.write(str(r) + " ")
         sys.stdout.write(str(g) + " ")
