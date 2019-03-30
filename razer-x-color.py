@@ -15,6 +15,7 @@ import argparse
 
 # Own
 import util
+import settings
 
 def parse_color_argument(color):
     # Hex: Just one input argument
@@ -69,25 +70,7 @@ def set_color(color):
     return rgb
 
 def get_effects_of_device(device):
-    # All relevant effects
-    effects = [
-        'breath_random',
-        'breath_single',
-        'breath_dual',
-        'breath_triple',
-        'pulsate',
-        'reactive',
-        'ripple',
-        'ripple_random',
-        'spectrum',
-        'static',
-        'startlight_single',
-        'starlight_dual',
-        'starlight_random',
-        'wave',
-    ]
-
-    return [effect for effect in effects if device.fx.has(effect)]
+    return [effect for effect in settings.EFFECTS if device.fx.has(effect)]
 
 def list_devices(device_manager):
     """
