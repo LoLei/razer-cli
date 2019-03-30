@@ -42,6 +42,7 @@ def get_x_color():
     return r, g, b
 
 def set_color(color):
+    """ Set the color either from the input argument or use a fallback color """
 
     r = 0
     g = 0
@@ -63,7 +64,12 @@ def set_color(color):
         sys.stdout.write(str(g) + " ")
         sys.stdout.write(str(b) + "\n\n")
 
-    return r, g, b
+    rgb = []
+    rgb.append(r)
+    rgb.append(g)
+    rgb.append(b)
+
+    return rgb
 
 def get_effects_of_device(device):
     # All relevant effects
@@ -109,13 +115,54 @@ def list_devices(device_manager):
             print("   capabilities: {}".format(device.capabilities))
     print()
 
+def set_effect_to_all_devices(device_manager, input_effect, color):
+    """ Set one effect to all connected devices, if they support that effect """
+    r = color[0]
+    g = color[1]
+    b = color[2]
+
+    # Iterate over each device and set the effect
+    for device in device_manager.devices:
+        effect_to_use = input_effect
+
+        if args.verbose:
+            if not device.fx.has(effect_to_use):
+                print("Device does not support chosen effect. Using static"
+                        " as fallback...")
+                effect_to_use = "static"
+
+        if (effect_to_use == "static"):
+            # Set the effect to static, requires colors in 0-255 range
+            device.fx.static(r, g, b)
+
+        elif (effect_to_use == "breath_single"):
+            # TODO: Maybe add 'breath_dual' with primary and secondary color
+            device.fx.breath_single(r, g, b)
+
+        elif (effect_to_use == "reactive"):
+            times = [razer_constants.REACTIVE_500MS, razer_constants.REACTIVE_1000MS,
+            razer_constants.REACTIVE_1500MS, razer_constants.REACTIVE_2000MS]
+            # TODO: Add choice for time maybe
+            device.fx.reactive(r, g, b, times[3])
+
+        elif (effect_to_use == "ripple"):
+            device.fx.ripple(r, g, b, razer_constants.RIPPLE_REFRESH_RATE)
+
+        else:
+            print("Effect is supported by device but not yet implemented.\n"
+                    "Consider opening a PR:\n"
+                    "https://github.com/LoLei/razer-x-color/pulls")
+            return
+
+        print("Setting device: {} to effect {}".format(device.name,
+            effect_to_use))
+
 def main():
     """ Main entry point of the app """
 
     # -------------------------------------------------------------------------
     # COLORS
-
-    r, g, b = set_color(args.color)
+    color = set_color(args.color)
 
     # -------------------------------------------------------------------------
     # DEVICES
@@ -129,32 +176,7 @@ def main():
     # Without this, the daemon will try to set the lighting effect to every device.
     device_manager.sync_effects = False
 
-    # Iterate over each device and set the effect
-    for device in device_manager.devices:
-        if args.verbose:
-            print("Setting device: {} to effect {}".format(device.name, args.effect))
-            if not device.fx.has(args.effect):
-                print("Device does not support chosen effect. Using static"
-                        " as fallback...")
-                args.effect = "static"
-
-        if (args.effect == "static"):
-            # Set the effect to static, requires colors in 0-255 range
-            device.fx.static(r, g, b)
-
-        elif (args.effect == "breath_single"):
-            # TODO: Maybe add 'breath_dual' with primary and secondary color
-            device.fx.breath_single(r, g, b)
-
-        elif (args.effect == "reactive"):
-            times = [razer_constants.REACTIVE_500MS, razer_constants.REACTIVE_1000MS,
-            razer_constants.REACTIVE_1500MS, razer_constants.REACTIVE_2000MS]
-            # TODO: Add choice for time maybe
-            device.fx.reactive(r, g, b, times[3])
-
-        elif (args.effect == "ripple"):
-            device.fx.ripple(r, g, b, razer_constants.RIPPLE_REFRESH_RATE)
-
+    set_effect_to_all_devices(device_manager, args.effect, color)
 
 if __name__ == "__main__":
     """ This is executed when run from the command line """
@@ -165,7 +187,6 @@ if __name__ == "__main__":
 
     parser.add_argument("-e", "--effect",
                         help="set effect (default: %(default)s)",
-                        choices=["static","breath_single","reactive", "ripple"],
                         default="static",
                         action="store")
 
