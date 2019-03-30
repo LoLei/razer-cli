@@ -1,5 +1,5 @@
 # razer-cli
-Command line interface for controlling Razer devices
+Command line interface for controlling Razer devices on Linux
 
 ## About
 With this command line interface you can configure your Razer peripherals, such
