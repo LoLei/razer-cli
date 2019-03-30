@@ -12,13 +12,17 @@ from openrazer.client import DeviceManager
 from openrazer.client import constants as razer_constants
 import argparse
 
+def hex_to_decimal(hex_color):
+    r = int(hex_color[0:2], 16)
+    g = int(hex_color[2:4], 16)
+    b = int(hex_color[4:6], 16)
+
+    return r, g, b
+
 def parse_color_argument(color):
     # Hex: Just one input argument
     rgb = color[0]
-
-    r = int(rgb[0:2], 16)
-    g = int(rgb[2:4], 16)
-    b = int(rgb[4:6], 16)
+    r, g, b = hex_to_decimal(rgb)
 
     # RGB: Three base10 input arguments
     # TODO
@@ -27,16 +31,13 @@ def parse_color_argument(color):
 
 def get_x_color():
     # Get current primary color used by pywal, which is color1 in Xresources
+    # Colors could also be read from ~/.cache/wal/colors.json, but this way it
+    # doesn't depend on pywal, in case the X colors are set from a different origin
     output = subprocess.check_output(
             "xrdb -query | grep \"*color1:\" | awk -F '#' '{print $2}'", 
             shell=True)
     rgb = output.decode()
-    # Colors could also be read from ~/.cache/wal/colors.json, but this way it
-    # doesn't depend on pywal, in case the X colors are set from a different origin
-
-    r = int(rgb[0:2], 16)
-    g = int(rgb[2:4], 16)
-    b = int(rgb[4:6], 16)
+    r, g, b = hex_to_decimal(rgb)
 
     return r, g, b
 
