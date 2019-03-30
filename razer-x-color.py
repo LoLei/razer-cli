@@ -212,7 +212,7 @@ if __name__ == "__main__":
 
     parser.add_argument("-a", "--automatic",
                         help="try to find colors and set them to all devices "
-                             "without user arguments",
+                             "without user arguments, uses X or pywal colors",
                         action="store_true")
 
     args = parser.parse_args()
