@@ -12,9 +12,36 @@ from openrazer.client import DeviceManager
 from openrazer.client import constants as razer_constants
 import argparse
 
+def parse_color_argument(color):
+    # Hex: Just one input argument
+    rgb = color[0]
+
+    r = int(rgb[0:2], 16)
+    g = int(rgb[2:4], 16)
+    b = int(rgb[4:6], 16)
+
+    # RGB: Three base10 input arguments
+    # TODO
+
+    return r, g, b
+
+def get_x_color():
+    # Get current primary color used by pywal, which is color1 in Xresources
+    output = subprocess.check_output(
+            "xrdb -query | grep \"*color1:\" | awk -F '#' '{print $2}'", 
+            shell=True)
+    rgb = output.decode()
+    # Colors could also be read from ~/.cache/wal/colors.json, but this way it
+    # doesn't depend on pywal, in case the X colors are set from a different origin
+
+    r = int(rgb[0:2], 16)
+    g = int(rgb[2:4], 16)
+    b = int(rgb[4:6], 16)
+
+    return r, g, b
+
 def main(args):
     """ Main entry point of the app """
-    print("hello world")
 
     # -------------------------------------------------------------------------
     # COLORS
@@ -25,37 +52,16 @@ def main(args):
 
     if(args.color):
         # Set colors from input argument
-        print(args.color)
-
-        # Hex: Just one input argument
-        rgb = args.color[0]
-
-        r = int(rgb[0:2], 16)
-        g = int(rgb[2:4], 16)
-        b = int(rgb[4:6], 16)
-
-        # RGB: Three base10 input arguments
-        # TODO
+        r, g, b = parse_color_argument(args.color)
 
     else:
         # Use X colors as fallback if no color argument is set
         # TODO: Maybe also add argument to pull colors from
         # ~/.cache/wal.colors.jason
-        # Get current primary color used by pywal
-        output = subprocess.check_output(
-                "xrdb -query | grep \"*color1:\" | awk -F '#' '{print $2}'", 
-                shell=True)
-        rgb = output.decode()
-        # Colors could also be read from ~/.cache/wal/colors.json, but this way it
-        # doesn't depend on pywal, in case the X colors are set from a different origin
-
-        r = int(rgb[0:2], 16)
-        g = int(rgb[2:4], 16)
-        b = int(rgb[4:6], 16)
+        r, g, b = get_x_color()
 
     if args.verbose:
-        print("Parsed RGB: {}".format(rgb))
-        print("In decimal: ")
+        print("RBG: ")
         sys.stdout.write(str(r) + " ")
         sys.stdout.write(str(g) + " ")
         sys.stdout.write(str(b) + "\n\n")
