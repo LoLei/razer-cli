@@ -123,13 +123,16 @@ def set_effect_to_all_devices(device_manager, input_effect, color):
 
     # Iterate over each device and set the effect
     for device in device_manager.devices:
-        effect_to_use = input_effect
+        if not input_effect:
+            effect_to_use = "static"
+        else:
+            effect_to_use = input_effect
 
-        if args.verbose:
-            if not device.fx.has(effect_to_use):
+        if not device.fx.has(effect_to_use):
+            effect_to_use = "static"
+            if args.verbose:
                 print("Device does not support chosen effect. Using static"
                         " as fallback...")
-                effect_to_use = "static"
 
         if (effect_to_use == "static"):
             # Set the effect to static, requires colors in 0-255 range
@@ -176,7 +179,9 @@ def main():
     # Without this, the daemon will try to set the lighting effect to every device.
     device_manager.sync_effects = False
 
-    set_effect_to_all_devices(device_manager, args.effect, color)
+    # Do below only if dry run is not specified
+    if args.automatic or args.effect or args.color:
+        set_effect_to_all_devices(device_manager, args.effect, color)
 
 if __name__ == "__main__":
     """ This is executed when run from the command line """
@@ -186,8 +191,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-e", "--effect",
-                        help="set effect (default: %(default)s)",
-                        default="static",
+                        help="set effect",
                         action="store")
 
     parser.add_argument("-v", "--verbose",
@@ -204,6 +208,11 @@ if __name__ == "__main__":
 
     parser.add_argument("-ll", "--list_devices_long",
                         help="list available devices and all their capabilities",
+                        action="store_true")
+
+    parser.add_argument("-a", "--automatic",
+                        help="try to find colors and set them to all devices "
+                             "without user arguments",
                         action="store_true")
 
     args = parser.parse_args()
