@@ -191,7 +191,7 @@ if __name__ == "__main__":
                              "for hex, or three for base10 rgb")
 
     parser.add_argument("-l", "--list_devices",
-                        help="list available devices",
+                        help="list available devices and their supported effects",
                         action="store_true")
 
     parser.add_argument("-ll", "--list_devices_long",
