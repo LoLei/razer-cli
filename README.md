@@ -1,36 +1,45 @@
-# razer-x-color
-Set Razer peripherals to X resources colors 
+# razer-cli
+Command line interface for controlling Razer devices
 
 ## About
-This script reads `color1` from the X resources via `xrdb` and then sets
-available RGB/Chroma Razer peripherals, such as keyboard and mouse, to use that
-color. Effects can be chosen as well.  
-It can be used in symbiosis with [`pywal`](https://github.com/dylanaraps/pywal),
-which sets this `color1` as its primary color.
+With this command line interface you can configure your Razer peripherals, such as keyboard and mouse, set their colors and effects, etc.
+
+The most simple use case (for which this tool was originally developed) is to use it in symbiosis with [`pywal`](https://github.com/dylanaraps/pywal). Then this tool will set your Razer colors to Pywal's colors. See below for more information.
 
 ## Installation
 In the meantime:
 ```bash
-git clone `https://github.com/LoLei/razer-x-color.git`
-cd razer-x-color
-# Execute wal before so a colorscheme is generated
-# if there are no colors defined in the X resources
-python razer-x-color.py
+git clone `https://github.com/LoLei/razer-cli.git`
+cd razer-cli
+./razer-cli.py
 ```
 TBD: Pip or AUR installation.
 
 ## Usage
 ```bash
-$ python razer-x-color.py -h
-usage: razer-x-color.py [-h] [--effect {static,breath,reactive,ripple}] [-v]
+$ ./razer-x-color.py -h                                 
+usage: razer-x-color.py [-h] [-e EFFECT] [-v] [-c COLOR [COLOR ...]] [-l]
+                        [-ll] [-a]
 
 optional arguments:
   -h, --help            show this help message and exit
-  --effect {static,breath,reactive,ripple}
-                        set effect (default: static)
+  -e EFFECT, --effect EFFECT
+                        set effect
   -v, --verbose         increase output verbosity
+  -c COLOR [COLOR ...], --color COLOR [COLOR ...]
+                        choose color (default: X color1), use one argument for
+                        hex, or three for base10 rgb
+  -l, --list_devices    list available devices
+  -ll, --list_devices_long
+                        list available devices and all their capabilities
+  -a, --automatic       try to find colors and set them to all devices without
+                        user arguments, uses X or pywal colors
+
 ```
 <sup>This might be out of date, just run it with `-h` yourself to see the newest options.</sup>  
+
+### Example usage with Pywal
+To get you mouse and keyboard to use Pywal's colors, simply start `razer-cli` with the `-a` flag, after having executed `wal`.    
 Example in action 
 [here](https://github.com/LoLei/dotfiles/blob/master/exec-wal.sh).
 
