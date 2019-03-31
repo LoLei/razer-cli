@@ -5,7 +5,7 @@ Module Docstring
 
 __author__ = "Lorenz Leitner"
 __version__ = "0.1.0"
-__license__ = "MIT" # TODO: Change
+__license__ = "GPL-3.0"
 
 # Libraries
 import subprocess, sys
