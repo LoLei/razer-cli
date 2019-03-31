@@ -5,7 +5,7 @@ Module Docstring
 
 __author__ = "Lorenz Leitner"
 __version__ = "0.1.0"
-__license__ = "MIT" # TODO: Change
+__license__ = "GPL-3.0"
 
 # Libraries
 import subprocess, sys
@@ -18,12 +18,19 @@ import util
 import settings
 
 def parse_color_argument(color):
-    # Hex: Just one input argument
-    rgb = color[0]
-    r, g, b = util.hex_to_decimal(rgb)
+    r = 0
+    g = 0
+    b = 0
 
-    # RGB: Three base10 input arguments
-    # TODO
+    if len(color) == 1:
+        # Hex: Just one input argument
+        rgb = color[0]
+        r, g, b = util.hex_to_decimal(rgb)
+    elif len(color) == 3:
+        # RGB: Three base10 input arguments
+        r = int(color[0])
+        g = int(color[1])
+        b = int(color[2])
 
     return r, g, b
 
