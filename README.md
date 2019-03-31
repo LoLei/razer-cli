@@ -1,5 +1,5 @@
 # razer-cli
-Command line interface for controlling Razer devices
+Command line interface for controlling Razer devices on Linux
 
 ## About
 With this command line interface you can configure your Razer peripherals, such
@@ -21,9 +21,9 @@ TBD: Pip or AUR installation.
 
 ## Usage
 ```bash
-$ ./razer-x-color.py -h                                 
-usage: razer-x-color.py [-h] [-e EFFECT] [-v] [-c COLOR [COLOR ...]] [-l]
-                        [-ll] [-a]
+$ ./razer-cli.py -h
+usage: razer-cli.py [-h] [-e EFFECT] [-v] [-c COLOR [COLOR ...]] [-l] [-ll]
+                    [-a]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -33,7 +33,7 @@ optional arguments:
   -c COLOR [COLOR ...], --color COLOR [COLOR ...]
                         choose color (default: X color1), use one argument for
                         hex, or three for base10 rgb
-  -l, --list_devices    list available devices
+  -l, --list_devices    list available devices and their supported effects
   -ll, --list_devices_long
                         list available devices and all their capabilities
   -a, --automatic       try to find colors and set them to all devices without
