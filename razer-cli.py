@@ -210,6 +210,10 @@ if __name__ == "__main__":
                              "without user arguments, uses X or pywal colors",
                         action="store_true")
 
+    parser.add_argument("-d","--devices", nargs="+",
+                        help="only affect these devices, same name as output "
+                             "of -l")
+
     args = parser.parse_args()
 
     if len(sys.argv) <= 1:
