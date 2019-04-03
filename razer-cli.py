@@ -143,7 +143,7 @@ def set_effect_to_all_devices(device_manager, input_effect, color):
     # Iterate over each device and set the effect
     for device in device_manager.devices:
         # If -d argument is set, only set those devices
-        if (args.devices and device.name in args.devices) or (not args.devices):
+        if (args.device and device.name in args.device) or (not args.device):
             if not input_effect:
                 effect_to_use = "static"
             else:
@@ -212,7 +212,7 @@ if __name__ == "__main__":
                              "without user arguments, uses X or pywal colors",
                         action="store_true")
 
-    parser.add_argument("-d","--devices", nargs="+",
+    parser.add_argument("-d","--device", nargs="+",
                         help="only affect these devices, same name as output "
                              "of -l")
 
