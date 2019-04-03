@@ -5,7 +5,7 @@ LONG_DESC = open('README.md').read()
 
 setuptools.setup(
     name="razercli",
-    version="0.0.4",
+    version="0.0.5",
     author="Lorenz Leitner",
     author_email="test@gmail.com",
     description="Control Razer devices from the command line",

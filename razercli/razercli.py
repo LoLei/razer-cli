@@ -17,6 +17,8 @@ import argparse
 from razercli import util
 from razercli import settings
 
+args = None
+
 def parse_color_argument(color):
     r = 0
     g = 0
@@ -161,29 +163,6 @@ def main():
     """ Main entry point of the app """
 
     # -------------------------------------------------------------------------
-    # COLORS
-    color = set_color(args.color)
-
-    # -------------------------------------------------------------------------
-    # DEVICES
-    # Create a DeviceManager. This is used to get specific devices
-    device_manager = DeviceManager()
-
-    if (args.list_devices or args.list_devices_long):
-        list_devices(device_manager)
-
-    # Disable daemon effect syncing.
-    # Without this, the daemon will try to set the lighting effect to every device.
-    device_manager.sync_effects = False
-
-    # Do below only if dry run is not specified
-    if args.automatic or args.effect or args.color:
-        set_effect_to_all_devices(device_manager, args.effect, color)
-
-if __name__ == "__main__":
-    """ This is executed when run from the command line """
-
-    # -------------------------------------------------------------------------
     # ARGS
     parser = argparse.ArgumentParser()
 
@@ -224,5 +203,28 @@ if __name__ == "__main__":
 
     if args.verbose:
         print("Starting Razer colors script...")
+
+    # -------------------------------------------------------------------------
+    # COLORS
+    color = set_color(args.color)
+
+    # -------------------------------------------------------------------------
+    # DEVICES
+    # Create a DeviceManager. This is used to get specific devices
+    device_manager = DeviceManager()
+
+    if (args.list_devices or args.list_devices_long):
+        list_devices(device_manager)
+
+    # Disable daemon effect syncing.
+    # Without this, the daemon will try to set the lighting effect to every device.
+    device_manager.sync_effects = False
+
+    # Do below only if dry run is not specified
+    if args.automatic or args.effect or args.color:
+        set_effect_to_all_devices(device_manager, args.effect, color)
+
+if __name__ == "__main__":
+    """ This is executed when run from the command line """
 
     main()
