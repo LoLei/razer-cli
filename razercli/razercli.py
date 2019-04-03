@@ -14,8 +14,8 @@ from openrazer.client import constants as razer_constants
 import argparse
 
 # Own
-import util
-import settings
+from razercli import util
+from razercli import settings
 
 def parse_color_argument(color):
     r = 0
