@@ -23,7 +23,7 @@ TBD: Pip or AUR installation.
 ```bash
 $ ./razer-cli.py -h
 usage: razer-cli.py [-h] [-e EFFECT] [-v] [-c COLOR [COLOR ...]] [-l] [-ll]
-                    [-a]
+                    [-a] [-d DEVICE [DEVICE ...]]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -38,7 +38,8 @@ optional arguments:
                         list available devices and all their capabilities
   -a, --automatic       try to find colors and set them to all devices without
                         user arguments, uses X or pywal colors
-
+  -d DEVICE [DEVICE ...], --device DEVICE [DEVICE ...]
+                        only affect these devices, same name as output of -l
 ```
 <sup>This might be out of date, just run it with `-h` yourself to see the newest
 options.</sup>  
