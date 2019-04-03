@@ -17,8 +17,6 @@ import argparse
 from razercli import util
 from razercli import settings
 
-args = None
-
 def parse_color_argument(color):
     r = 0
     g = 0
@@ -48,16 +46,16 @@ def get_x_color():
 
     return r, g, b
 
-def set_color(color):
+def set_color(args):
     """ Set the color either from the input argument or use a fallback color """
 
     r = 0
     g = 0
     b = 0
 
-    if(color):
+    if(args.color):
         # Set colors from input argument
-        r, g, b = parse_color_argument(color)
+        r, g, b = parse_color_argument(args.color)
 
     else:
         # Use X colors as fallback if no color argument is set
@@ -81,7 +79,7 @@ def set_color(color):
 def get_effects_of_device(device):
     return [effect for effect in settings.EFFECTS if device.fx.has(effect)]
 
-def list_devices(device_manager):
+def list_devices(args, device_manager):
     """
     List all connected Razer devices
     https://github.com/openrazer/openrazer/blob/master/examples/list_devices.py
@@ -104,7 +102,7 @@ def list_devices(device_manager):
             print("   capabilities: {}".format(device.capabilities))
     print()
 
-def set_effect_to_device(device, effect, color):
+def set_effect_to_device(args, device, effect, color):
     # Save used settings for this device to a file
     util.write_settings_to_file(device, effect, color)
 
@@ -139,7 +137,7 @@ def set_effect_to_device(device, effect, color):
         effect))
 
 
-def set_effect_to_all_devices(device_manager, input_effect, color):
+def set_effect_to_all_devices(args, device_manager, input_effect, color):
     """ Set one effect to all connected devices, if they support that effect """
 
     # Iterate over each device and set the effect
@@ -157,7 +155,7 @@ def set_effect_to_all_devices(device_manager, input_effect, color):
                     print("Device does not support chosen effect. Using static"
                             " as fallback...")
 
-            set_effect_to_device(device, effect_to_use, color)
+            set_effect_to_device(args, device, effect_to_use, color)
 
 def main():
     """ Main entry point of the app """
@@ -206,7 +204,7 @@ def main():
 
     # -------------------------------------------------------------------------
     # COLORS
-    color = set_color(args.color)
+    color = set_color(args)
 
     # -------------------------------------------------------------------------
     # DEVICES
@@ -214,7 +212,7 @@ def main():
     device_manager = DeviceManager()
 
     if (args.list_devices or args.list_devices_long):
-        list_devices(device_manager)
+        list_devices(args, device_manager)
 
     # Disable daemon effect syncing.
     # Without this, the daemon will try to set the lighting effect to every device.
@@ -222,7 +220,7 @@ def main():
 
     # Do below only if dry run is not specified
     if args.automatic or args.effect or args.color:
-        set_effect_to_all_devices(device_manager, args.effect, color)
+        set_effect_to_all_devices(args, device_manager, args.effect, color)
 
 if __name__ == "__main__":
     """ This is executed when run from the command line """
