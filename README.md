@@ -67,6 +67,8 @@ argument is missing, in the future.
 * [`xrdb`](https://www.archlinux.org/packages/extra/x86_64/xorg-xrdb/)
 
 ## Features to come
-* Specifying devices, instead of using all devices
+* ~Specifying devices, instead of using all devices~ :white_check_mark:  
 * Reusing current settings, in case user cannot enter the same command again or
-  retrieve it from history
+  retrieve it from history  
+  
+Feel free to open feature request issues or PRs.
