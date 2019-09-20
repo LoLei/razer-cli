@@ -62,13 +62,15 @@ Currently this will imply the `-a` flag being used for the missing setting. I
 plan on also having the option to reuse the current color/effect, if the
 argument is missing, in the future.
 
+#### Other symbiosis tools
+* [`wpgtk`](https://github.com/deviantfero/wpgtk)
+* [`ColTerm`](https://github.com/SeungheonOh/ColTerm)
+
 ## Dependencies
 * [`openrazer`](https://github.com/openrazer/openrazer)
 * [`xrdb`](https://www.archlinux.org/packages/extra/x86_64/xorg-xrdb/)
 
 ## Features to come
-* ~Specifying devices, instead of using all devices~ :white_check_mark:  
-* Reusing current settings, in case user cannot enter the same command again or
-  retrieve it from history  
+* DPI settings
   
 Feel free to open feature request issues or PRs.
