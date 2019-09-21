@@ -11,18 +11,15 @@ this tool will set your Razer colors to Pywal's colors. See below for more
 information.
 
 ## Installation
-In the meantime:
 ```bash
 git clone `https://github.com/LoLei/razer-cli.git`
-cd razer-cli
-./razer-cli.py
+./install.sh
 ```
-TBD: Pip or AUR installation.
 
 ## Usage
 ```bash
-$ ./razer-cli.py -h
-usage: razer-cli.py [-h] [-e EFFECT] [-v] [-c COLOR [COLOR ...]] [-l] [-ll]
+$ razer-cli -h
+usage: razer-cli [-h] [-e EFFECT] [-v] [-c COLOR [COLOR ...]] [-l] [-ll]
                     [-a] [-d DEVICE [DEVICE ...]]
 
 optional arguments:
@@ -46,17 +43,17 @@ options.</sup>
 
 ### Example usage with Pywal
 To get your mouse and keyboard to use Pywal's colors, simply start `razer-cli`
-with the `-a` flag, after having executed `wal`: `./razer-cli.py -a`  
+with the `-a` flag, after having executed `wal`: `razer-cli -a`  
 Example in action 
 [here](https://github.com/LoLei/dotfiles/blob/master/exec-wal.sh).
 
 #### Other examples
-`$ ./razer-cli.py -e ripple -c ff0000`  
-`$ ./razer-cli.py -e static -c ffffff`  
+`$ razer-cli -e ripple -c ff0000`  
+`$ razer-cli -e static -c ffffff`  
 
 You can also leave out the color or the effect:  
-`$ ./razer-cli.py -e breath_single`  
-`./razer-cli.py -c 55ff99`
+`$ razer-cli -e breath_single`  
+`$ razer-cli -c 55ff99`
 
 Currently this will imply the `-a` flag being used for the missing setting. I
 plan on also having the option to reuse the current color/effect, if the
@@ -64,7 +61,7 @@ argument is missing, in the future.
 
 #### Other symbiosis tools
 * [`wpgtk`](https://github.com/deviantfero/wpgtk)
-* [`ColTerm`](https://github.com/SeungheonOh/ColTerm)
+* [`Chameleon`](https://github.com/GideonWolfe/Chameleon)
 
 ## Dependencies
 * [`openrazer`](https://github.com/openrazer/openrazer)
