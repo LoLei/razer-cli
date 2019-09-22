@@ -68,6 +68,6 @@ argument is missing, in the future.
 * [`xrdb`](https://www.archlinux.org/packages/extra/x86_64/xorg-xrdb/)
 
 ## Features to come
-* DPI settings
+* DPI settings (Waiting for [openrazer#887](https://github.com/openrazer/openrazer/pull/887) to test it on my mouse)
   
 Feel free to open feature request issues or PRs.
