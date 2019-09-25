@@ -77,6 +77,8 @@ def set_color(color):
     return rgb
 
 def get_effects_of_device(device):
+    print(device.fx.has('logo_static'))
+    print(device.max_dpi)
     return [effect for effect in settings.EFFECTS if device.fx.has(effect)]
 
 def list_devices(device_manager):
@@ -113,6 +115,7 @@ def set_effect_to_device(device, effect, color):
     if (effect == "static"):
         # Set the effect to static, requires colors in 0-255 range
         device.fx.static(r, g, b)
+        device.fx.misc.logo.static(r, g, b)
 
     elif (effect == "breath_single"):
         # TODO: Maybe add 'breath_dual' with primary and secondary color
