@@ -116,6 +116,7 @@ def set_effect_to_device(device, effect, color):
         # Set the effect to static, requires colors in 0-255 range
         device.fx.static(r, g, b)
         device.fx.misc.logo.static(r, g, b)
+        device.fx.misc.scroll_wheel.static(r, g, b)
 
     elif (effect == "breath_single"):
         # TODO: Maybe add 'breath_dual' with primary and secondary color
