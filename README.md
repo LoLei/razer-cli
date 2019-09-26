@@ -68,7 +68,7 @@ argument is missing, in the future.
 * [`xrdb`](https://www.archlinux.org/packages/extra/x86_64/xorg-xrdb/)
 
 ## Features to come
-* DPI settings (Waiting for [openrazer#887](https://github.com/openrazer/openrazer/pull/887) to test it on my mouse)
+* DPI settings? At least one guy requested it.
 
 ## Disclaimer
 Not all devices have been tested, but basic effects should work everywhere. Some guesswork is being done as to what capabilities are supported on specific devices. If you need more advanced configuration, consider using the GUIs [Polychromatic](https://github.com/polychromatic/polychromatic/), [RazerGenie](https://github.com/z3ntu/RazerGenie) or [RazerCommander](https://gitlab.com/gabmus/razerCommander) which have specific implementations for most devices.
