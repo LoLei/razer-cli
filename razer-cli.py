@@ -112,16 +112,24 @@ def set_effect_to_device(device, effect, color):
 
     if (effect == "static"):
         # Set the effect to static, requires colors in 0-255 range
-        device.fx.static(r, g, b)
+        try:
+            # Avoid checking for device type
+            # Keyboard
+            device.fx.static(r, g, b)
+            # Mouse
+            device.fx.misc.logo.static(r, g, b)
+            device.fx.misc.scroll_wheel.static(r, g, b)
+            device.fx.misc.left.static(r, g, b)
+            device.fx.misc.right.static(r, g, b)
+        except:
+            pass
 
     elif (effect == "breath_single"):
-        # TODO: Maybe add 'breath_dual' with primary and secondary color
         device.fx.breath_single(r, g, b)
 
     elif (effect == "reactive"):
         times = [razer_constants.REACTIVE_500MS, razer_constants.REACTIVE_1000MS,
         razer_constants.REACTIVE_1500MS, razer_constants.REACTIVE_2000MS]
-        # TODO: Add choice for time maybe
         device.fx.reactive(r, g, b, times[3])
 
     elif (effect == "ripple"):
@@ -152,8 +160,8 @@ def set_effect_to_all_devices(device_manager, input_effect, color):
             if not device.fx.has(effect_to_use):
                 effect_to_use = "static"
                 if args.verbose:
-                    print("Device does not support chosen effect. Using static"
-                            " as fallback...")
+                    print("Device does not support chosen effect (yet). Using "
+                            " static as fallback...")
 
             set_effect_to_device(device, effect_to_use, color)
 
@@ -174,6 +182,7 @@ def main():
 
     # Disable daemon effect syncing.
     # Without this, the daemon will try to set the lighting effect to every device.
+    # TODO: Could be enabled as flag
     device_manager.sync_effects = False
 
     # Do below only if dry run is not specified
