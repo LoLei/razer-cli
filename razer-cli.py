@@ -117,6 +117,11 @@ def set_dpi(device_manager):
                 if args.verbose:
                     print("Setting DPI of device {} to {}".format(device.name,
                         args.dpi))
+
+                # Save used settings for this device to a file
+                util.write_settings_to_file(device, dpi=args.dpi)
+
+                # Actually set DPI
                 dpi_to_use = int(args.dpi)
                 device.dpi = (dpi_to_use, dpi_to_use)
 
