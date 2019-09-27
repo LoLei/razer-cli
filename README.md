@@ -19,8 +19,8 @@ git clone `https://github.com/LoLei/razer-cli.git`
 ## Usage
 ```bash
 $ razer-cli -h
-usage: razer-cli [-h] [-e EFFECT] [-v] [-c COLOR [COLOR ...]] [-l] [-ll]
-                    [-a] [-d DEVICE [DEVICE ...]]
+usage: razer-cli [-h] [-e EFFECT] [-v] [-c COLOR [COLOR ...]] [-l] [-ll] [-a]
+                 [-d DEVICE [DEVICE ...]] [--dpi DPI]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -37,6 +37,7 @@ optional arguments:
                         user arguments, uses X or pywal colors
   -d DEVICE [DEVICE ...], --device DEVICE [DEVICE ...]
                         only affect these devices, same name as output of -l
+  --dpi DPI             set DPI of device
 ```
 <sup>This might be out of date, just run it with `-h` yourself to see the newest
 options.</sup>  
@@ -66,9 +67,6 @@ argument is missing, in the future.
 ## Dependencies
 * [`openrazer`](https://github.com/openrazer/openrazer)
 * [`xrdb`](https://www.archlinux.org/packages/extra/x86_64/xorg-xrdb/)
-
-## Features to come
-* DPI settings? At least one guy requested it.
 
 ## Disclaimer
 Not all devices have been tested, but basic effects should work everywhere. Some guesswork is being done as to what capabilities are supported on specific devices. If you need more advanced configuration, consider using the GUIs [Polychromatic](https://github.com/polychromatic/polychromatic/), [RazerGenie](https://github.com/z3ntu/RazerGenie) or [RazerCommander](https://gitlab.com/gabmus/razerCommander) which have specific implementations for most devices.
