@@ -67,7 +67,7 @@ def set_color(color):
         print("RBG: ")
         sys.stdout.write(str(r) + " ")
         sys.stdout.write(str(g) + " ")
-        sys.stdout.write(str(b) + "\n\n")
+        sys.stdout.write(str(b) + "\n")
 
     rgb = []
     rgb.append(r)
@@ -91,6 +91,9 @@ def list_devices(device_manager):
     for device in device_manager.devices:
         print("{}:".format(device.name))
         print("   type: {}".format(device.type))
+        if (device.type == "mouse"):
+            print("   DPI: {}".format(device.dpi))
+            print("   max DPI: {}".format(device.max_dpi))
         print("   serial: {}".format(device.serial))
         print("   firmware version: {}".format(device.firmware_version))
         print("   driver version: {}".format(device.driver_version))
@@ -101,6 +104,21 @@ def list_devices(device_manager):
         if (args.list_devices_long):
             print("   capabilities: {}".format(device.capabilities))
     print()
+
+def set_dpi(device_manager):
+    # Iterate over each device and set DPI
+    for device in device_manager.devices:
+        # If -d argument is set, only set those devices
+        if (args.device and device.name in args.device) or (not args.device):
+            if (device.type != "mouse"):
+                if args.verbose:
+                    print("Device {} is not a mouse".format(device.name))
+            else:
+                if args.verbose:
+                    print("Setting DPI of device {} to {}".format(device.name,
+                        args.dpi))
+                dpi_to_use = int(args.dpi)
+                device.dpi = (dpi_to_use, dpi_to_use)
 
 def set_effect_to_device(device, effect, color):
     # Save used settings for this device to a file
@@ -114,9 +132,9 @@ def set_effect_to_device(device, effect, color):
         # Set the effect to static, requires colors in 0-255 range
         try:
             # Avoid checking for device type
-            # Keyboard
+            # Keyboard - doesn't throw
             device.fx.static(r, g, b)
-            # Mouse
+            # Mouse - throws
             device.fx.misc.logo.static(r, g, b)
             device.fx.misc.scroll_wheel.static(r, g, b)
             device.fx.misc.left.static(r, g, b)
@@ -188,6 +206,9 @@ def main():
     # Do below only if dry run is not specified
     if args.automatic or args.effect or args.color:
         set_effect_to_all_devices(device_manager, args.effect, color)
+    
+    if args.dpi:
+        set_dpi(device_manager)
 
 if __name__ == "__main__":
     """ This is executed when run from the command line """
@@ -221,9 +242,13 @@ if __name__ == "__main__":
                              "without user arguments, uses X or pywal colors",
                         action="store_true")
 
-    parser.add_argument("-d","--device", nargs="+",
+    parser.add_argument("-d", "--device", nargs="+",
                         help="only affect these devices, same name as output "
                              "of -l")
+
+    parser.add_argument("--dpi",
+                        help="set DPI of device",
+                        action="store")
 
     args = parser.parse_args()
 
