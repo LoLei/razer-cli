@@ -1,4 +1,4 @@
-import settings
+from razer_cli import settings
 import os
 import json
 

@@ -14,8 +14,11 @@ from openrazer.client import constants as razer_constants
 import argparse
 
 # Own
-import util
-import settings
+from razer_cli import util
+from razer_cli import settings
+
+# Global
+args = 0
 
 def parse_color_argument(color):
     r = 0
@@ -188,36 +191,8 @@ def set_effect_to_all_devices(device_manager, input_effect, color):
 
             set_effect_to_device(device, effect_to_use, color)
 
-def main():
-    """ Main entry point of the app """
 
-    # -------------------------------------------------------------------------
-    # COLORS
-    color = set_color(args.color)
-
-    # -------------------------------------------------------------------------
-    # DEVICES
-    # Create a DeviceManager. This is used to get specific devices
-    device_manager = DeviceManager()
-
-    if (args.list_devices or args.list_devices_long):
-        list_devices(device_manager)
-
-    # Disable daemon effect syncing.
-    # Without this, the daemon will try to set the lighting effect to every device.
-    # TODO: Could be enabled as flag
-    device_manager.sync_effects = False
-
-    # Do below only if dry run is not specified
-    if args.automatic or args.effect or args.color:
-        set_effect_to_all_devices(device_manager, args.effect, color)
-    
-    if args.dpi:
-        set_dpi(device_manager)
-
-if __name__ == "__main__":
-    """ This is executed when run from the command line """
-
+def read_args():
     # -------------------------------------------------------------------------
     # ARGS
     parser = argparse.ArgumentParser()
@@ -255,6 +230,7 @@ if __name__ == "__main__":
                         help="set DPI of device",
                         action="store")
 
+    global args
     args = parser.parse_args()
 
     if len(sys.argv) <= 1:
@@ -263,5 +239,39 @@ if __name__ == "__main__":
 
     if args.verbose:
         print("Starting Razer colors script...")
+
+
+def main():
+    """ Main entry point of the app """
+
+    read_args()
+
+    # -------------------------------------------------------------------------
+    # COLORS
+    color = set_color(args.color)
+
+    # -------------------------------------------------------------------------
+    # DEVICES
+    # Create a DeviceManager. This is used to get specific devices
+    device_manager = DeviceManager()
+
+    if (args.list_devices or args.list_devices_long):
+        list_devices(device_manager)
+
+    # Disable daemon effect syncing.
+    # Without this, the daemon will try to set the lighting effect to every device.
+    # TODO: Could be enabled as flag
+    device_manager.sync_effects = False
+
+    # Do below only if dry run is not specified
+    if args.automatic or args.effect or args.color:
+        set_effect_to_all_devices(device_manager, args.effect, color)
+    
+    if args.dpi:
+        set_dpi(device_manager)
+
+
+if __name__ == "__main__":
+    """ This is executed when run from the command line - obsolete """
 
     main()
