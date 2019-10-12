@@ -2,7 +2,7 @@
 
 import unittest
 import os.path
-from openrazer.client import DeviceManager
+# from openrazer.client import DeviceManager
 
 from razer_cli import settings
 from razer_cli import util
@@ -15,8 +15,8 @@ class TestUtil(unittest.TestCase):
         """> Test if cache file writing works"""
 
         # Save random device settings to cache
-        device_manager = DeviceManager()
-        util.write_settings_to_file(device_manager.devices[0], dpi="1234")
+        # device_manager = DeviceManager()
+        # util.write_settings_to_file(device_manager.devices[0], dpi="1234")
 
         # Check if file has been written - Could be extended to check whether
         # settings have been written correctly as well
