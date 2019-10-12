@@ -20,9 +20,9 @@ jobs:
     - name: Install dependencies
       run: |
         sudo add-apt-repository ppa:openrazer/stable
-        apt update
-        apt install openrazer-meta
-        apt install x11-xserver-utils
+        sudo apt update
+        sudo apt install openrazer-meta
+        sudo apt install x11-xserver-utils
     - name: Lint with flake8
       run: |
         pip install flake8
