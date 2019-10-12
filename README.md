@@ -12,8 +12,7 @@ information.
 
 ## Installation
 ```bash
-git clone `https://github.com/LoLei/razer-cli.git`
-./install.sh
+pip install razer-cli
 ```
 
 ## Usage
