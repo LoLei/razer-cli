@@ -65,7 +65,10 @@ argument is missing, in the future.
 
 ## Dependencies
 * [`openrazer`](https://github.com/openrazer/openrazer)
+  * :warning: Do not install `openrazer` from [pip](https://pypi.org/project/openrazer/), which is something else.
+  * Instead install it from one of the various package managers of your distribution.
 * [`xrdb`](https://www.archlinux.org/packages/extra/x86_64/xorg-xrdb/)
+  * Also available on most distros.
 
 ## Disclaimer
 Not all devices have been tested, but basic effects should work everywhere. Some guesswork is being done as to what capabilities are supported on specific devices. If you need more advanced configuration, consider using the GUIs [Polychromatic](https://github.com/polychromatic/polychromatic/), [RazerGenie](https://github.com/z3ntu/RazerGenie) or [RazerCommander](https://gitlab.com/gabmus/razerCommander) which have specific implementations for most devices.
