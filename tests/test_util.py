@@ -11,7 +11,7 @@ from razer_cli import util
 class TestUtil(unittest.TestCase):
     """Test the util functions."""
 
-    def test_write_settings_to_file(self):
+    def disabled_test_write_settings_to_file(self):
         """> Test if cache file writing works"""
 
         # Save random device settings to cache
@@ -27,6 +27,15 @@ class TestUtil(unittest.TestCase):
         result = os.path.isfile(path_and_file)
 
         self.assertEqual(result, True)
+
+    def test_hex_to_decimal(self):
+        """> Test if hex converting works"""
+
+        red, green, blue = util.hex_to_decimal("3399ff")
+
+        self.assertEqual(red, 51)
+        self.assertEqual(green, 153)
+        self.assertEqual(blue, 255)
 
 
 if __name__ == "__main__":
