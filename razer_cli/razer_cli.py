@@ -128,7 +128,24 @@ def set_dpi(device_manager):
                 dpi_to_use = int(args.dpi)
                 device.dpi = (dpi_to_use, dpi_to_use)
 
+def reset_device_effect(device):
+    # Set the effect to static, requires colors in 0-255 range
+        try:
+            # Avoid checking for device type
+            # Keyboard - doesn't throw
+            device.fx.static(0, 0, 0)
+            # Mouse - throws
+            device.fx.misc.logo.static(0, 0, 0)
+            device.fx.misc.scroll_wheel.static(0, 0, 0)
+            device.fx.misc.left.static(0, 0, 0)
+            device.fx.misc.right.static(0, 0, 0)
+        except:
+            pass
+
 def set_effect_to_device(device, effect, color):
+    # Reset device effect to blank
+    reset_device_effect(device)
+
     # Save used settings for this device to a file
     util.write_settings_to_file(device, effect, color)
 
