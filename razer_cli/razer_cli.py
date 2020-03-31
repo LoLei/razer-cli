@@ -178,6 +178,12 @@ def set_effect_to_device(device, effect, color):
     elif (effect == "ripple"):
         device.fx.ripple(r, g, b, razer_constants.RIPPLE_REFRESH_RATE)
 
+    elif (effect == "starlight_random"):
+        device.fx.starlight_random(razer_constants.STARLIGHT_NORMAL)
+
+    elif (effect == "starlight_single"):
+        device.fx.starlight_single(r, g, b, razer_constants.STARLIGHT_NORMAL)
+
     else:
         print("Effect is supported by device but not yet implemented.\n"
                 "Consider opening a PR:\n"
