@@ -20,7 +20,7 @@ information.
 ```
 $ razer-cli -h
 usage: razer-cli [-h] [-e EFFECT] [-v] [-c COLOR [COLOR ...]] [-l] [-ll] [-a]
-[-d DEVICE [DEVICE ...]] [--dpi DPI] [-b BRIGHTNESS]
+                 [-d DEVICE [DEVICE ...]] [--dpi DPI] [-b BRIGHTNESS]
 
 optional arguments:
   -h, --help            show this help message and exit
