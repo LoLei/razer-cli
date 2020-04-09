@@ -4,7 +4,7 @@ Module Docstring
 """
 
 __author__ = "Lorenz Leitner"
-__version__ = "1.1"
+__version__ = "1.2"
 __license__ = "GPL-3.0"
 
 # Libraries
@@ -97,6 +97,8 @@ def list_devices(device_manager):
         if (device.type == "mouse"):
             print("   DPI: {}".format(device.dpi))
             print("   max DPI: {}".format(device.max_dpi))
+        if device.capabilities['brightness']:
+            print("   brightness: {}".format(device.brightness))
         print("   serial: {}".format(device.serial))
         print("   firmware version: {}".format(device.firmware_version))
         print("   driver version: {}".format(device.driver_version))
@@ -107,6 +109,7 @@ def list_devices(device_manager):
         if (args.list_devices_long):
             print("   capabilities: {}".format(device.capabilities))
     print()
+
 
 def set_dpi(device_manager):
     # Iterate over each device and set DPI
@@ -127,6 +130,38 @@ def set_dpi(device_manager):
                 # Actually set DPI
                 dpi_to_use = int(args.dpi)
                 device.dpi = (dpi_to_use, dpi_to_use)
+
+
+def set_brightness(device_manager):
+    # Iterate over each device and set DPI
+    for device in device_manager.devices:
+        # If -d argument is set, only set those devices
+        if (args.device and device.name in args.device) or (not args.device):
+            if args.verbose:
+                print("Setting brightness of device {} to {}".
+                      format(device.name, args.brightness))
+
+            # Save used settings for this device to a file
+            util.write_settings_to_file(device, brightness=args.brightness)
+
+            # Don't store it initially as int with type=int in argparse
+            # because then the if arg.brightness will fail if it is 0
+            brightness = int(args.brightness)
+
+            # Actually set brightness
+            if device.capabilities['brightness']:
+                device.brightness = brightness
+
+            # Mouse most likely doesn't have overall brightness
+            if device.capabilities['lighting_logo_brightness']:
+                device.fx.misc.logo.brightness = brightness
+            if device.capabilities['lighting_scroll_brightness']:
+                device.fx.misc.scroll_wheel.brightness = brightness
+            if device.capabilities['lighting_left_brightness']:
+                device.fx.misc.left.brightness = brightness
+            if device.capabilities['lighting_right_brightness']:
+                device.fx.misc.right.brightness = brightness
+
 
 def reset_device_effect(device):
     # Set the effect to static, requires colors in 0-255 range
@@ -228,7 +263,7 @@ def read_args():
                         help="increase output verbosity",
                         action="store_true")
 
-    parser.add_argument("-c","--color", nargs="+",
+    parser.add_argument("-c", "--color", nargs="+",
                         help="choose color (default: X color1), use one argument "
                              "for hex, or three for base10 rgb")
 
@@ -251,6 +286,11 @@ def read_args():
 
     parser.add_argument("--dpi",
                         help="set DPI of device",
+                        action="store")
+
+    parser.add_argument("-b", "--brightness",
+                        help="set brightness of device",
+                        dest='brightness',
                         action="store")
 
     global args
@@ -289,9 +329,12 @@ def main():
     # Do below only if dry run is not specified
     if args.automatic or args.effect or args.color:
         set_effect_to_all_devices(device_manager, args.effect, color)
-    
+
     if args.dpi:
         set_dpi(device_manager)
+
+    if args.brightness:
+        set_brightness(device_manager)
 
 
 if __name__ == "__main__":
