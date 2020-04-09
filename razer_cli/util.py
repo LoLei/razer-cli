@@ -9,7 +9,7 @@ def hex_to_decimal(hex_color):
 
     return r, g, b
 
-def write_settings_to_file(device, effect="", color="", dpi=""):
+def write_settings_to_file(device, effect="", color="", dpi="", brightness=""):
     """ Save settings to a file for possible later retrieval """
     
     home_dir = os.path.expanduser("~")
@@ -38,6 +38,8 @@ def write_settings_to_file(device, effect="", color="", dpi=""):
                     item['effect'] = effect
                  if (dpi != ""):
                     item['dpi'] = dpi
+                 if (brightness != ""):
+                    item['brightness'] = brightness
 
     # Update existing entry
     if found_existing_settings:
@@ -54,6 +56,8 @@ def write_settings_to_file(device, effect="", color="", dpi=""):
             used_settings['effect'] = effect
         if (dpi != ""):
             used_settings['dpi'] = dpi
+        if (brightness != ""):
+            used_settings['brightness'] = brightness
         with open(path_and_file, mode='w') as file:
             json_data.append(used_settings)
             json.dump(json_data, file, indent=2)

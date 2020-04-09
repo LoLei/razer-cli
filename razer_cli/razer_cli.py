@@ -142,7 +142,7 @@ def set_brightness(device_manager):
                       format(device.name, args.brightness))
 
                 # Save used settings for this device to a file
-                # util.write_settings_to_file(device, dpi=args.dpi)
+                util.write_settings_to_file(device, brightness=args.brightness)
 
                 # Don't store it initially as int with type=int in argparse
                 # because then the if arg.brightness will fail if it is 0
