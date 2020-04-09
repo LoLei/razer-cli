@@ -14,15 +14,15 @@ this tool will set your Razer colors to Pywal's colors. See below for more
 information.
 
 ## Installation
-```bash
-pip install razer-cli
+```
+[pip install razer-cli](https://pypi.org/project/razer-cli/)
 ```
 
 ## Usage
-```bash
+```
 $ razer-cli -h
 usage: razer-cli [-h] [-e EFFECT] [-v] [-c COLOR [COLOR ...]] [-l] [-ll] [-a]
-                 [-d DEVICE [DEVICE ...]] [--dpi DPI]
+[-d DEVICE [DEVICE ...]] [--dpi DPI] [-b BRIGHTNESS]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -30,16 +30,16 @@ optional arguments:
                         set effect
   -v, --verbose         increase output verbosity
   -c COLOR [COLOR ...], --color COLOR [COLOR ...]
-                        choose color (default: X color1), use one argument for
-                        hex, or three for base10 rgb
+                        choose color (default: X color1), use one argument for hex, or three for base10 rgb
   -l, --list_devices    list available devices and their supported effects
   -ll, --list_devices_long
                         list available devices and all their capabilities
-  -a, --automatic       try to find colors and set them to all devices without
-                        user arguments, uses X or pywal colors
+  -a, --automatic       try to find colors and set them to all devices without user arguments, uses X or pywal colors
   -d DEVICE [DEVICE ...], --device DEVICE [DEVICE ...]
                         only affect these devices, same name as output of -l
   --dpi DPI             set DPI of device
+  -b BRIGHTNESS, --brightness BRIGHTNESS
+                        set brightness of device
 ```
 <sup>This might be out of date, just run it with `-h` yourself to see the newest
 options.</sup>  

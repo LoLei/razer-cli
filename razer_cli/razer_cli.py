@@ -4,7 +4,7 @@ Module Docstring
 """
 
 __author__ = "Lorenz Leitner"
-__version__ = "1.1"
+__version__ = "1.2"
 __license__ = "GPL-3.0"
 
 # Libraries
