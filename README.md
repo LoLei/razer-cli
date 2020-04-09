@@ -14,9 +14,7 @@ this tool will set your Razer colors to Pywal's colors. See below for more
 information.
 
 ## Installation
-```
-[pip install razer-cli](https://pypi.org/project/razer-cli/)
-```
+[`pip install razer-cli`](https://pypi.org/project/razer-cli/)
 
 ## Usage
 ```
