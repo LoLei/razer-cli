@@ -141,26 +141,26 @@ def set_brightness(device_manager):
                 print("Setting brightness of device {} to {}".
                       format(device.name, args.brightness))
 
-                # Save used settings for this device to a file
-                util.write_settings_to_file(device, brightness=args.brightness)
+            # Save used settings for this device to a file
+            util.write_settings_to_file(device, brightness=args.brightness)
 
-                # Don't store it initially as int with type=int in argparse
-                # because then the if arg.brightness will fail if it is 0
-                brightness = int(args.brightness)
+            # Don't store it initially as int with type=int in argparse
+            # because then the if arg.brightness will fail if it is 0
+            brightness = int(args.brightness)
 
-                # Actually set brightness
-                if device.capabilities['brightness']:
-                    device.brightness = brightness
+            # Actually set brightness
+            if device.capabilities['brightness']:
+                device.brightness = brightness
 
-                # Mouse most likely doesn't have overall brightness
-                if device.capabilities['lighting_logo_brightness']:
-                    device.fx.misc.logo.brightness = brightness
-                if device.capabilities['lighting_scroll_brightness']:
-                    device.fx.misc.scroll_wheel.brightness = brightness
-                if device.capabilities['lighting_left_brightness']:
-                    device.fx.misc.left.brightness = brightness
-                if device.capabilities['lighting_right_brightness']:
-                    device.fx.misc.right.brightness = brightness
+            # Mouse most likely doesn't have overall brightness
+            if device.capabilities['lighting_logo_brightness']:
+                device.fx.misc.logo.brightness = brightness
+            if device.capabilities['lighting_scroll_brightness']:
+                device.fx.misc.scroll_wheel.brightness = brightness
+            if device.capabilities['lighting_left_brightness']:
+                device.fx.misc.left.brightness = brightness
+            if device.capabilities['lighting_right_brightness']:
+                device.fx.misc.right.brightness = brightness
 
 
 def reset_device_effect(device):
