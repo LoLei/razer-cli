@@ -235,18 +235,17 @@ def set_effect_to_device(device, effect, color, effect_args=[]):
         colors_to_dist = []
         if effect_args:
             colors_to_dist = [util.hex_to_decimal(c) for c in effect_args]
+        # Use random colors if no colors are supplied
+        else:
+            colors_to_dist = [util.get_random_color_rgb() for _ in
+                              range(cols*rows)]
 
         try:
             counter = 0
             for row in range(rows):
                 for col in range(cols):
-                    if colors_to_dist:
-                        device.fx.advanced.matrix.set(row, col,
-                                colors_to_dist[counter % len(colors_to_dist)])
-                    # Use random colors if no colors are supplied
-                    else:
-                        device.fx.advanced.matrix.set(row, col,
-                                util.get_random_color_rgb())
+                    device.fx.advanced.matrix.set(row, col,
+                            colors_to_dist[counter % len(colors_to_dist)])
                     counter += 1
             # device.fx.advanced.draw_fb_or()
             device.fx.advanced.draw()
