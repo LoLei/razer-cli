@@ -32,5 +32,9 @@ EFFECTS = [
 
 # These effects are not built-in the driver
 CUSTOM_EFFECTS = [
-        'multicolor'  # Multiple colors - For now a random color for each key
+        # Multiple colors - Either no additional argument and a random color is
+        # chosen for each key, or colors can be supplied which are then evenly
+        # distributed, for example razer-cli -v -e multicolor ff0000 00ff00
+        # 0000ff
+        'multicolor'
 ]
