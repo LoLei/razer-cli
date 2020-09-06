@@ -330,8 +330,6 @@ def read_args():
 def main():
     """ Main entry point of the app """
 
-    print('DEVELOPMENT BUILD - TODO REMOVE THIS STATEMENT')
-
     read_args()
 
     # -------------------------------------------------------------------------
