@@ -365,8 +365,11 @@ def main():
 
     # Do below only if dry run is not specified
     if args.automatic or args.effect or args.color:
-        set_effect_to_all_devices(device_manager, args.effect[0], color,
-                                  args.effect[1:])
+        if args.effect:
+            set_effect_to_all_devices(device_manager, args.effect[0], color,
+                                      args.effect[1:])
+        else:
+            set_effect_to_all_devices(device_manager, args.effect, color)
 
     if args.dpi:
         set_dpi(device_manager)
