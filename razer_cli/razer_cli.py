@@ -184,7 +184,7 @@ def reset_device_effect(device):
         pass
 
 
-def set_effect_to_device(device, effect, color):
+def set_effect_to_device(device, effect, color, effect_args=[]):
     # Reset device effect to blank
     reset_device_effect(device)
 
@@ -227,14 +227,27 @@ def set_effect_to_device(device, effect, color):
         device.fx.starlight_single(r, g, b, razer_constants.STARLIGHT_NORMAL)
 
     elif (effect == "multicolor"):
+        print(effect_args)
         cols = device.fx.advanced.cols
         rows = device.fx.advanced.rows
 
+        # Use supplied colors and distribute them evenly if colors are supplied
+        colors_to_dist = []
+        if effect_args:
+            colors_to_dist = [util.hex_to_decimal(c) for c in effect_args]
+
         try:
+            counter = 0
             for row in range(rows):
                 for col in range(cols):
-                    device.fx.advanced.matrix.set(row, col,
-                                                  util.get_random_color_rgb())
+                    if colors_to_dist:
+                        device.fx.advanced.matrix.set(row, col,
+                                colors_to_dist[counter % len(colors_to_dist)])
+                    # Use random colors if no colors are supplied
+                    else:
+                        device.fx.advanced.matrix.set(row, col,
+                                util.get_random_color_rgb())
+                    counter += 1
             # device.fx.advanced.draw_fb_or()
             device.fx.advanced.draw()
         except (AssertionError, ValueError) as e:
@@ -251,7 +264,8 @@ def set_effect_to_device(device, effect, color):
                                                    effect))
 
 
-def set_effect_to_all_devices(device_manager, input_effect, color):
+def set_effect_to_all_devices(device_manager, input_effect, color,
+                              effect_args=[]):
     """ Set one effect to all connected devices, if they support that effect """
 
     # Iterate over each device and set the effect
@@ -270,7 +284,7 @@ def set_effect_to_all_devices(device_manager, input_effect, color):
                     print("Device does not support chosen effect (yet). Using "
                           " static as fallback...")
 
-            set_effect_to_device(device, effect_to_use, color)
+            set_effect_to_device(device, effect_to_use, color, effect_args)
 
 
 def read_args():
@@ -280,7 +294,8 @@ def read_args():
 
     parser.add_argument("-e", "--effect",
                         help="set effect",
-                        action="store")
+                        action="store",
+                        nargs="+")
 
     parser.add_argument("-v", "--verbose",
                         help="increase output verbosity",
@@ -351,7 +366,8 @@ def main():
 
     # Do below only if dry run is not specified
     if args.automatic or args.effect or args.color:
-        set_effect_to_all_devices(device_manager, args.effect, color)
+        set_effect_to_all_devices(device_manager, args.effect[0], color,
+                                  args.effect[1:])
 
     if args.dpi:
         set_dpi(device_manager)
