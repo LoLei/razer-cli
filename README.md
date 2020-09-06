@@ -64,7 +64,7 @@ argument is missing, in the future.
 
 #### Effects
 Effects are listed in
-[`razer_cli/util.py`](https://github.com/LoLei/razer-cli/blob/master/razer_cli/util.py).
+[`razer_cli/settings.py`](https://github.com/LoLei/razer-cli/blob/master/razer_cli/settings.py).
 Some of the built-in effects or not implemented yet. If such an effect is
 chosen, a notice will be logged. There are also custom effects that do not exist
 normally, such as `multicolor`, which is described in the same file.
