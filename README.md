@@ -70,6 +70,11 @@ Some of the built-in effects or not implemented yet. If such an effect is
 chosen, a notice will be logged. There are also custom effects that do not exist
 normally, such as `multicolor`, which is described in the same file.
 
+Here's a showcase of that effect:
+<p align="center">
+  <img src="https://raw.githubusercontent.com/LoLei/razer-cli/master/images/randomshowcase.gif">
+</p>
+
 #### Other symbiosis tools
 * [`wpgtk`](https://github.com/deviantfero/wpgtk)
 * [`Chameleon`](https://github.com/GideonWolfe/Chameleon)
