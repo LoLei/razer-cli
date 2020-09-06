@@ -4,11 +4,12 @@ Module Docstring
 """
 
 __author__ = "Lorenz Leitner"
-__version__ = "1.2"
+__version__ = "1.3"
 __license__ = "GPL-3.0"
 
 # Libraries
-import subprocess, sys
+import subprocess
+import sys
 from openrazer.client import DeviceManager
 from openrazer.client import constants as razer_constants
 import argparse
@@ -19,6 +20,7 @@ from razer_cli import settings
 
 # Global
 args = 0
+
 
 def parse_color_argument(color):
     r = 0
@@ -37,17 +39,19 @@ def parse_color_argument(color):
 
     return r, g, b
 
+
 def get_x_color():
     # Get current primary color used by pywal, which is color1 in Xresources
     # Colors could also be read from ~/.cache/wal/colors.json, but this way it
     # doesn't depend on pywal, in case the X colors are set from a different origin
     output = subprocess.check_output(
-            "xrdb -query | grep \"*color1:\" | awk -F '#' '{print $2}'", 
-            shell=True)
+        "xrdb -query | grep \"*color1:\" | awk -F '#' '{print $2}'",
+        shell=True)
     rgb = output.decode()
     r, g, b = util.hex_to_decimal(rgb)
 
     return r, g, b
+
 
 def set_color(color):
     """ Set the color either from the input argument or use a fallback color """
@@ -79,8 +83,10 @@ def set_color(color):
 
     return rgb
 
+
 def get_effects_of_device(device):
     return [effect for effect in settings.EFFECTS if device.fx.has(effect)]
+
 
 def list_devices(device_manager):
     """
@@ -122,7 +128,7 @@ def set_dpi(device_manager):
             else:
                 if args.verbose:
                     print("Setting DPI of device {} to {}".format(device.name,
-                        args.dpi))
+                                                                  args.dpi))
 
                 # Save used settings for this device to a file
                 util.write_settings_to_file(device, dpi=args.dpi)
@@ -165,17 +171,18 @@ def set_brightness(device_manager):
 
 def reset_device_effect(device):
     # Set the effect to static, requires colors in 0-255 range
-        try:
-            # Avoid checking for device type
-            # Keyboard - doesn't throw
-            device.fx.static(0, 0, 0)
-            # Mouse - throws
-            device.fx.misc.logo.static(0, 0, 0)
-            device.fx.misc.scroll_wheel.static(0, 0, 0)
-            device.fx.misc.left.static(0, 0, 0)
-            device.fx.misc.right.static(0, 0, 0)
-        except:
-            pass
+    try:
+        # Avoid checking for device type
+        # Keyboard - doesn't throw
+        device.fx.static(0, 0, 0)
+        # Mouse - throws
+        device.fx.misc.logo.static(0, 0, 0)
+        device.fx.misc.scroll_wheel.static(0, 0, 0)
+        device.fx.misc.left.static(0, 0, 0)
+        device.fx.misc.right.static(0, 0, 0)
+    except:
+        pass
+
 
 def set_effect_to_device(device, effect, color):
     # Reset device effect to blank
@@ -207,7 +214,7 @@ def set_effect_to_device(device, effect, color):
 
     elif (effect == "reactive"):
         times = [razer_constants.REACTIVE_500MS, razer_constants.REACTIVE_1000MS,
-        razer_constants.REACTIVE_1500MS, razer_constants.REACTIVE_2000MS]
+                 razer_constants.REACTIVE_1500MS, razer_constants.REACTIVE_2000MS]
         device.fx.reactive(r, g, b, times[3])
 
     elif (effect == "ripple"):
@@ -219,14 +226,29 @@ def set_effect_to_device(device, effect, color):
     elif (effect == "starlight_single"):
         device.fx.starlight_single(r, g, b, razer_constants.STARLIGHT_NORMAL)
 
+    elif (effect == "multicolor"):
+        cols = device.fx.advanced.cols
+        rows = device.fx.advanced.rows
+
+        try:
+            for row in range(rows):
+                for col in range(cols):
+                    device.fx.advanced.matrix.set(row, col,
+                                                  util.get_random_color_rgb())
+            # device.fx.advanced.draw_fb_or()
+            device.fx.advanced.draw()
+        except (AssertionError, ValueError) as e:
+            if args.verbose:
+                print("Warning: " + str(e))
+
     else:
         print("Effect is supported by device but not yet implemented.\n"
-                "Consider opening a PR:\n"
-                "https://github.com/LoLei/razer-x-color/pulls")
+              "Consider opening a PR:\n"
+              "https://github.com/LoLei/razer-x-color/pulls")
         return
 
     print("Setting device: {} to effect {}".format(device.name,
-        effect))
+                                                   effect))
 
 
 def set_effect_to_all_devices(device_manager, input_effect, color):
@@ -241,11 +263,12 @@ def set_effect_to_all_devices(device_manager, input_effect, color):
             else:
                 effect_to_use = input_effect
 
-            if not device.fx.has(effect_to_use):
+            if ((not device.fx.has(effect_to_use)) and (effect_to_use not in
+                                                        settings.CUSTOM_EFFECTS)):
                 effect_to_use = "static"
                 if args.verbose:
                     print("Device does not support chosen effect (yet). Using "
-                            " static as fallback...")
+                          " static as fallback...")
 
             set_effect_to_device(device, effect_to_use, color)
 
@@ -306,6 +329,8 @@ def read_args():
 
 def main():
     """ Main entry point of the app """
+
+    print('DEVELOPMENT BUILD - TODO REMOVE THIS STATEMENT')
 
     read_args()
 

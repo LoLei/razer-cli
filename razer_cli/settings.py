@@ -29,3 +29,8 @@ EFFECTS = [
         'static',
         'wave',
 ]
+
+# These effects are not built-in the driver
+CUSTOM_EFFECTS = [
+        'multicolor'  # Multiple colors - For now a random color for each key
+]

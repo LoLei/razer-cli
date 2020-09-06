@@ -1,6 +1,7 @@
 from razer_cli import settings
 import os
 import json
+import random
 
 def hex_to_decimal(hex_color):
     r = int(hex_color[0:2], 16)
@@ -9,9 +10,18 @@ def hex_to_decimal(hex_color):
 
     return r, g, b
 
+
+def get_random_color_rgb():
+    r = random.randint(0, 255)
+    g = random.randint(0, 255)
+    b = random.randint(0, 255)
+
+    return r, g, b
+
+
 def write_settings_to_file(device, effect="", color="", dpi="", brightness=""):
     """ Save settings to a file for possible later retrieval """
-    
+
     home_dir = os.path.expanduser("~")
     dir_name = settings.CACHE_DIR
     file_name = settings.CACHE_FILE
