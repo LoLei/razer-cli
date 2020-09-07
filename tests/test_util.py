@@ -11,7 +11,8 @@ from razer_cli import util
 class TestUtil(unittest.TestCase):
     """Test the util functions."""
 
-    def disabled_test_write_settings_to_file(self):
+    @unittest.skip("requires openrazer driver + pylib on machine")
+    def test_write_settings_to_file(self):
         """> Test if cache file writing works"""
 
         # Save random device settings to cache
@@ -36,6 +37,15 @@ class TestUtil(unittest.TestCase):
         self.assertEqual(red, 51)
         self.assertEqual(green, 153)
         self.assertEqual(blue, 255)
+
+    def test_random_color(self):
+        """> Test if random color works"""
+
+        red, green, blue = util.get_random_color_rgb()
+
+        self.assertTrue(0 <= red <= 255)
+        self.assertTrue(0 <= green <= 255)
+        self.assertTrue(0 <= blue <= 255)
 
 
 if __name__ == "__main__":
