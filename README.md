@@ -1,6 +1,6 @@
 # razer-cli
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 Command line interface for controlling Razer devices on Linux
 
@@ -101,6 +101,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://github.com/Ansis100"><img src="https://avatars2.githubusercontent.com/u/35926716?v=4" width="100px;" alt=""/><br /><sub><b>Ansis</b></sub></a><br /><a href="https://github.com/LoLei/razer-cli/commits?author=Ansis100" title="Code">💻</a></td>
+    <td align="center"><a href="https://t1c.dev"><img src="https://avatars0.githubusercontent.com/u/44733677?v=4" width="100px;" alt=""/><br /><sub><b>Kainoa Kanter</b></sub></a><br /><a href="#ideas-ThatOneCalculator" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
