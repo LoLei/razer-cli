@@ -62,6 +62,19 @@ Currently this will imply the `-a` flag being used for the missing setting. I
 plan on also having the option to reuse the current color/effect, if the
 argument is missing, in the future.
 
+#### Effects
+Effects are listed in
+[`razer_cli/settings.py`](https://github.com/LoLei/razer-cli/blob/master/razer_cli/settings.py).
+The effects that are supported per device can be listed with `razer-cli -l[l]`.
+Some of the built-in effects or not implemented yet. If such an effect is
+chosen, a notice will be logged. There are also custom effects that do not exist
+normally, such as `multicolor`, which is described in the same file.
+
+Here's a showcase of that effect:
+<p align="center">
+  <img src="https://raw.githubusercontent.com/LoLei/razer-cli/master/images/randomshowcase.gif">
+</p>
+
 #### Other symbiosis tools
 * [`wpgtk`](https://github.com/deviantfero/wpgtk)
 * [`Chameleon`](https://github.com/GideonWolfe/Chameleon)

@@ -29,3 +29,12 @@ EFFECTS = [
         'static',
         'wave',
 ]
+
+# These effects are not built-in the driver
+CUSTOM_EFFECTS = [
+        # Multiple colors - Either no additional argument and a random color is
+        # chosen for each key, or colors can be supplied which are then evenly
+        # distributed, for example razer-cli -e multicolor ff0000 00ff00
+        # 0000ff
+        'multicolor'
+]
