@@ -4,7 +4,7 @@ Module Docstring
 """
 
 __author__ = "Lorenz Leitner"
-__version__ = "1.3"
+__version__ = "1.3.1"
 __license__ = "GPL-3.0"
 
 # Libraries
@@ -227,7 +227,6 @@ def set_effect_to_device(device, effect, color, effect_args=[]):
         device.fx.starlight_single(r, g, b, razer_constants.STARLIGHT_NORMAL)
 
     elif (effect == "multicolor"):
-        print(effect_args)
         cols = device.fx.advanced.cols
         rows = device.fx.advanced.rows
 
