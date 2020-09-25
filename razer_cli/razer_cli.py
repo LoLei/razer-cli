@@ -4,7 +4,7 @@ Module Docstring
 """
 
 __author__ = "Lorenz Leitner"
-__version__ = "1.3.1"
+__version__ = "1.3.2"
 __license__ = "GPL-3.0"
 
 # Libraries
@@ -46,7 +46,11 @@ def get_x_color():
     # doesn't depend on pywal, in case the X colors are set from a different origin
     output = subprocess.check_output(
         "xrdb -query | grep \"*color1:\" | awk -F '#' '{print $2}'",
-        shell=True)
+        shell=True).strip()
+
+    if not output:
+        return 0, 0, 0
+
     rgb = output.decode()
     r, g, b = util.hex_to_decimal(rgb)
 
