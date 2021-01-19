@@ -4,7 +4,7 @@ Module Docstring
 """
 
 __author__ = "Lorenz Leitner"
-__version__ = "1.3.2"
+__version__ = "1.4.0"
 __license__ = "GPL-3.0"
 
 # Libraries
@@ -107,6 +107,8 @@ def list_devices(device_manager):
         if (device.type == "mouse"):
             print("   DPI: {}".format(device.dpi))
             print("   max DPI: {}".format(device.max_dpi))
+        if device.has("poll_rate"):
+            print("   polling rate: {}".format(device.poll_rate))
         if device.capabilities['brightness']:
             print("   brightness: {}".format(device.brightness))
         print("   serial: {}".format(device.serial))
@@ -118,6 +120,10 @@ def list_devices(device_manager):
 
         if (args.list_devices_long):
             print("   capabilities: {}".format(device.capabilities))
+        if (args.list_devices_long_human):
+            print("   capabilities:")
+            for i in device.capabilities:
+                print("      ", i, "=", device.capabilities[i])
     print()
 
 
@@ -129,6 +135,12 @@ def set_dpi(device_manager):
             if (device.type != "mouse"):
                 if args.verbose:
                     print("Device {} is not a mouse".format(device.name))
+            elif args.dpi == "print":
+                args.dpi = str(device.dpi)[1:-1].split(', ')
+                if args.dpi[0] == args.dpi[1]:
+                    print(args.dpi[0])
+                else:
+                    print(args.dpi[0], args.dpi[1])
             else:
                 if args.verbose:
                     print("Setting DPI of device {} to {}".format(device.name,
@@ -138,8 +150,31 @@ def set_dpi(device_manager):
                 util.write_settings_to_file(device, dpi=args.dpi)
 
                 # Actually set DPI
-                dpi_to_use = int(args.dpi)
-                device.dpi = (dpi_to_use, dpi_to_use)
+                args.dpi = args.dpi.split(',')
+                if len(args.dpi) == 1:
+                    args.dpi.append(int(args.dpi[0]))
+                device.dpi = (int(args.dpi[0]), int(args.dpi[1]))
+
+
+def set_poll_rate(device_manager):
+    # Iterate over each device and set Polling Rate
+    for device in device_manager.devices:
+        # If -d argument is set, only set those devices
+        if (args.device and device.name in args.device) or (not args.device):
+            if device.has("poll_rate"):
+                if args.poll == "print":
+                    print(device.poll_rate)
+                else:
+                    if args.verbose:
+                        print(
+                            "Setting polling rate of device {} to {}".format(
+                                device.name,
+                                args.poll))
+
+                    # Actually set Polling Rate
+                    device.poll_rate = int(args.poll)
+            else:
+                print("Device does not support setting the polling rate")
 
 
 def set_brightness(device_manager):
@@ -248,7 +283,7 @@ def set_effect_to_device(device, effect, color, effect_args=[]):
             for row in range(rows):
                 for col in range(cols):
                     device.fx.advanced.matrix.set(row, col,
-                            colors_to_dist[counter % len(colors_to_dist)])
+                                                  colors_to_dist[counter % len(colors_to_dist)])
                     counter += 1
             # device.fx.advanced.draw_fb_or()
             device.fx.advanced.draw()
@@ -315,6 +350,10 @@ def read_args():
                         help="list available devices and all their capabilities",
                         action="store_true")
 
+    parser.add_argument("-llh", "--list_devices_long_human",
+                        help="list devices and capabilities human readable",
+                        action="store_true")
+
     parser.add_argument("-a", "--automatic",
                         help="try to find colors and set them to all devices "
                              "without user arguments, uses X or pywal colors",
@@ -326,6 +365,10 @@ def read_args():
 
     parser.add_argument("--dpi",
                         help="set DPI of device",
+                        action="store")
+
+    parser.add_argument("--poll",
+                        help="set polling rate of device",
                         action="store")
 
     parser.add_argument("-b", "--brightness",
@@ -350,24 +393,26 @@ def main():
     read_args()
 
     # -------------------------------------------------------------------------
-    # COLORS
-    color = set_color(args.color)
-
-    # -------------------------------------------------------------------------
     # DEVICES
     # Create a DeviceManager. This is used to get specific devices
     device_manager = DeviceManager()
 
-    if (args.list_devices or args.list_devices_long):
+    if (args.list_devices or args.list_devices_long or
+            args.list_devices_long_human):
         list_devices(device_manager)
 
     # Disable daemon effect syncing.
-    # Without this, the daemon will try to set the lighting effect to every device.
+    # Without this, the daemon will try to set the lighting effect to every
+    # device.
     # TODO: Could be enabled as flag
     device_manager.sync_effects = False
 
     # Do below only if dry run is not specified
     if args.automatic or args.effect or args.color:
+        # ----------------------------------------------------------------------
+        # COLORS
+        color = set_color(args.color)
+
         if args.effect:
             set_effect_to_all_devices(device_manager, args.effect[0], color,
                                       args.effect[1:])
@@ -376,6 +421,9 @@ def main():
 
     if args.dpi:
         set_dpi(device_manager)
+
+    if args.poll:
+        set_poll_rate(device_manager)
 
     if args.brightness:
         set_brightness(device_manager)
