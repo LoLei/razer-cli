@@ -80,12 +80,7 @@ def set_color(color):
         sys.stdout.write(str(g) + " ")
         sys.stdout.write(str(b) + "\n")
 
-    rgb = []
-    rgb.append(r)
-    rgb.append(g)
-    rgb.append(b)
-
-    return rgb
+    return [r, g, b]
 
 
 def get_effects_of_device(device):
