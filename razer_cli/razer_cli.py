@@ -4,7 +4,7 @@ Module Docstring
 """
 
 __author__ = "Lorenz Leitner"
-__version__ = "1.4.0"
+__version__ = "1.5.0"
 __license__ = "GPL-3.0"
 
 # Libraries
@@ -120,7 +120,7 @@ def list_devices(device_manager):
 
         if (args.list_devices_long):
             print("   capabilities: {}".format(device.capabilities))
-        if (args.list_devices_long_human):
+        elif (args.list_devices_long_human):
             print("   capabilities:")
             for i in device.capabilities:
                 print("      ", i, "=", device.capabilities[i])
@@ -376,15 +376,17 @@ def read_args():
                         dest='brightness',
                         action="store")
 
+    parser.add_argument("--sync",
+                        help="sync lighting effects to all supported "
+                        "Razer products",
+                        action="store_true")
+
     global args
     args = parser.parse_args()
 
     if len(sys.argv) <= 1:
         parser.print_help()
         sys.exit(1)
-
-    if args.verbose:
-        print("Starting Razer colors script...")
 
 
 def main():
@@ -397,15 +399,10 @@ def main():
     # Create a DeviceManager. This is used to get specific devices
     device_manager = DeviceManager()
 
-    if (args.list_devices or args.list_devices_long or
-            args.list_devices_long_human):
-        list_devices(device_manager)
-
     # Disable daemon effect syncing.
     # Without this, the daemon will try to set the lighting effect to every
     # device.
-    # TODO: Could be enabled as flag
-    device_manager.sync_effects = False
+    device_manager.sync_effects = args.sync
 
     # Do below only if dry run is not specified
     if args.automatic or args.effect or args.color:
@@ -427,6 +424,10 @@ def main():
 
     if args.brightness:
         set_brightness(device_manager)
+
+    if (args.list_devices or args.list_devices_long or
+            args.list_devices_long_human):
+        list_devices(device_manager)
 
 
 if __name__ == "__main__":
