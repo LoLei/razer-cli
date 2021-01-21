@@ -18,28 +18,34 @@ information.
 
 ## Usage
 ```
-$ razer-cli -h
-usage: razer-cli [-h] [-e EFFECT] [-v] [-c COLOR [COLOR ...]] [-l] [-ll] [-a]
-                 [-d DEVICE [DEVICE ...]] [--dpi DPI] [-b BRIGHTNESS]
+$ razer-cli -h                                                             <<<
+usage: razer-cli [-h] [-e EFFECT [EFFECT ...]] [-v] [-c COLOR [COLOR ...]]
+                 [-l] [-ll] [-llh] [-a] [-d DEVICE [DEVICE ...]] [--dpi DPI]
+                 [--poll POLL] [-b BRIGHTNESS] [--sync]
 
 optional arguments:
   -h, --help            show this help message and exit
-  -e EFFECT, --effect EFFECT
+  -e EFFECT [EFFECT ...], --effect EFFECT [EFFECT ...]
                         set effect
   -v, --verbose         increase output verbosity
   -c COLOR [COLOR ...], --color COLOR [COLOR ...]
-                        choose color (default: X color1), use one argument for
-                        hex, or three for base10 rgb
+                        choose color (default: X color1), use one argument
+                        for hex, or three for base10 rgb
   -l, --list_devices    list available devices and their supported effects
   -ll, --list_devices_long
                         list available devices and all their capabilities
-  -a, --automatic       try to find colors and set them to all devices without
-                        user arguments, uses X or pywal colors
+  -llh, --list_devices_long_human
+                        list devices and capabilities human readable
+  -a, --automatic       try to find colors and set them to all devices
+                        without user arguments, uses X or pywal colors
   -d DEVICE [DEVICE ...], --device DEVICE [DEVICE ...]
                         only affect these devices, same name as output of -l
-  --dpi DPI             set DPI of device
+  --dpi DPI             set DPI of device (use print as a value to show it)
+  --poll POLL           set polling rate of device (use print as a value to
+                        show it)
   -b BRIGHTNESS, --brightness BRIGHTNESS
                         set brightness of device
+  --sync                sync lighting effects to all supported Razer products
 ```
 <sup>This might be out of date, just run it with `-h` yourself to see the newest
 options.</sup>  

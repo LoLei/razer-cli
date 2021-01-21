@@ -4,7 +4,7 @@ Module Docstring
 """
 
 __author__ = "Lorenz Leitner"
-__version__ = "1.5.0"
+__version__ = "1.5.1"
 __license__ = "GPL-3.0"
 
 # Libraries
@@ -131,11 +131,17 @@ def set_dpi(device_manager):
                 if args.verbose:
                     print("Device {} is not a mouse".format(device.name))
             elif args.dpi == "print":
-                args.dpi = str(device.dpi)[1:-1].split(', ')
-                if args.dpi[0] == args.dpi[1]:
-                    print(args.dpi[0])
+                dpi = str(device.dpi)[1:-1].split(', ')
+                if args.poll == "print":
+                    if dpi[0] == dpi[1]:
+                        print('dpi:', dpi[0])
+                    else:
+                        print('dpi:', dpi[0], dpi[1])
                 else:
-                    print(args.dpi[0], args.dpi[1])
+                    if dpi[0] == dpi[1]:
+                        print(dpi[0])
+                    else:
+                        print(dpi[0], dpi[1])
             else:
                 if args.verbose:
                     print("Setting DPI of device {} to {}".format(device.name,
@@ -158,7 +164,10 @@ def set_poll_rate(device_manager):
         if (args.device and device.name in args.device) or (not args.device):
             if device.has("poll_rate"):
                 if args.poll == "print":
-                    print(device.poll_rate)
+                    if args.dpi == "print":
+                        print('poll_rate:', device.poll_rate)
+                    else:
+                        print(device.poll_rate)
                 else:
                     if args.verbose:
                         print(
@@ -358,12 +367,13 @@ def read_args():
                         help="only affect these devices, same name as output "
                              "of -l")
 
-    parser.add_argument("--dpi",
-                        help="set DPI of device",
+    parser.add_argument("--dpi", help="set DPI of device"
+                        " (use print as a value to show it)",
                         action="store")
 
     parser.add_argument("--poll",
-                        help="set polling rate of device",
+                        help="set polling rate of device"
+                        " (use print as a value to show it)",
                         action="store")
 
     parser.add_argument("-b", "--brightness",
