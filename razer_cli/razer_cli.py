@@ -415,7 +415,7 @@ def read_args():
                         action="store")
 
     parser.add_argument("-b", "--brightness", nargs="+",
-                        help="set brightness of device"
+                        help="set brightness of device",
                         dest='brightness',
                         action="store")
 
