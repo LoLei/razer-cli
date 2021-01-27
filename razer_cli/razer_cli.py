@@ -4,7 +4,7 @@ Module Docstring
 """
 
 __author__ = "Lorenz Leitner"
-__version__ = "1.5.1"
+__version__ = "1.5.2"
 __license__ = "GPL-3.0"
 
 # Libraries
@@ -75,10 +75,8 @@ def set_color(color):
         r, g, b = get_x_color()
 
     if args.verbose:
-        print("RBG: ")
-        sys.stdout.write(str(r) + " ")
-        sys.stdout.write(str(g) + " ")
-        sys.stdout.write(str(b) + "\n")
+        print("RBG:", "\n",
+              '    ', r, g, b)
 
     return [r, g, b]
 
@@ -97,17 +95,39 @@ def list_devices(device_manager):
 
     # Iterate over each device and pretty out some standard information about each
     for device in device_manager.devices:
-        print("{}:".format(device.name))
-        print("   type: {}".format(device.type))
-        if (device.type == "mouse"):
+        if device.has('name'):
+            print("{}:".format(device.name))
+        else:
+            print("unknown device:")
+        if device.has('type'):
+            print("   type: {}".format(device.type))
+        if device.has('dpi'):
             print("   DPI: {}".format(device.dpi))
             print("   max DPI: {}".format(device.max_dpi))
-        if device.has("poll_rate"):
+            if(device.has('available_dpi')):
+                print("   available DPI: {}".format(device.available_dpi))
+        if device.has('poll_rate'):
             print("   polling rate: {}".format(device.poll_rate))
-        if device.capabilities['brightness']:
+        if device.has('battery'):
+            print("   battery: {}".format(device.battery))
+        if device.has('brightness'):
             print("   brightness: {}".format(device.brightness))
-        print("   serial: {}".format(device.serial))
-        print("   firmware version: {}".format(device.firmware_version))
+        if device.has('lighting_logo_brightness'):
+            print("   brightness (logo): {}".format(
+                device.fx.misc.logo.brightness))
+        if device.has('lighting_scroll_brightness'):
+            print("   brightness (wheel): {}".format(
+                device.fx.misc.scroll_wheel.brightness))
+        if device.has('lighting_left_brightness'):
+            print("   brightness (left): {}".format(
+                device.fx.misc.left.brightness))
+        if device.has('lighting_right_brightness'):
+            print("   brightness (right): {}".format(
+                device.fx.misc.right.brightness))
+        if device.has('serial'):
+            print("   serial: {}".format(device.serial))
+        if device.has('firmware_version'):
+            print("   firmware version: {}".format(device.firmware_version))
         print("   driver version: {}".format(device.driver_version))
 
         device_effects = get_effects_of_device(device)
@@ -187,29 +207,47 @@ def set_brightness(device_manager):
         # If -d argument is set, only set those devices
         if (args.device and device.name in args.device) or (not args.device):
             if args.verbose:
-                print("Setting brightness of device {} to {}".
-                      format(device.name, args.brightness))
+                print("Setting brightness of device {}:".format(device.name))
 
-            # Save used settings for this device to a file
-            util.write_settings_to_file(device, brightness=args.brightness)
+            brightness = args.brightness
 
-            # Don't store it initially as int with type=int in argparse
-            # because then the if arg.brightness will fail if it is 0
-            brightness = int(args.brightness)
-
-            # Actually set brightness
-            if device.capabilities['brightness']:
-                device.brightness = brightness
-
-            # Mouse most likely doesn't have overall brightness
-            if device.capabilities['lighting_logo_brightness']:
-                device.fx.misc.logo.brightness = brightness
-            if device.capabilities['lighting_scroll_brightness']:
-                device.fx.misc.scroll_wheel.brightness = brightness
-            if device.capabilities['lighting_left_brightness']:
-                device.fx.misc.left.brightness = brightness
-            if device.capabilities['lighting_right_brightness']:
-                device.fx.misc.right.brightness = brightness
+            if 'all' in brightness.keys():
+                brightness['generic'] = brightness['all']
+                brightness['logo'] = brightness['all']
+                brightness['scroll'] = brightness['all']
+                brightness['left'] = brightness['all']
+                brightness['right'] = brightness['all']
+                del brightness['all']
+            if 'wheel' in brightness.keys() and not device.has('lighting_wheel_brightness'):
+                brightness['scroll'] = brightness['wheel']
+                del brightness['wheel']
+                if args.verbose:
+                   print('    Device does not support "wheel" assuming "scroll"')
+            if args.verbose:
+                print('    Input data:', brightness)
+            for i in brightness:
+                if i == 'generic':
+                    if device.has('brightness'):
+                        if args.verbose:
+                            print('        Setting brightness to:',
+                                  brightness[i])
+                        device.brightness = int(brightness['generic'])
+                        # Save used settings for this device to a file
+                        util.write_settings_to_file(
+                            device, brightness=brightness['generic'])
+                    elif args.verbose:
+                        print('        Device does not support brightness')
+                elif device.has('lighting_'+i+'_brightness'):
+                    if args.verbose:
+                        print('        Setting lighting_'+i +
+                              '_brightness to', brightness[i])
+                    val = int(brightness[i])
+                    if i == 'scroll':
+                        i = 'scroll_wheel'
+                    getattr(device.fx.misc, i).brightness = val
+                elif args.verbose:
+                    print('        Device does not support lighting_' +
+                          i+'_brightness')
 
 
 def reset_device_effect(device):
@@ -376,7 +414,7 @@ def read_args():
                         " (use print as a value to show it)",
                         action="store")
 
-    parser.add_argument("-b", "--brightness",
+    parser.add_argument("-b", "--brightness", nargs="+",
                         help="set brightness of device",
                         dest='brightness',
                         action="store")
@@ -428,7 +466,32 @@ def main():
         set_poll_rate(device_manager)
 
     if args.brightness:
-        set_brightness(device_manager)
+        i = len(args.brightness)
+        if i == 1 and args.brightness[0].isnumeric():
+            args.brightness = {"all": args.brightness[0]}
+            set_brightness(device_manager)
+        elif i % 2 == 0:
+            brightness = {}
+            i = i-1
+            while i > -1:
+                name = args.brightness[i-1]
+                value = args.brightness[i]
+                if args.brightness[i].isnumeric():
+                    brightness[name] = value
+                #elif args.verbose:
+                else:
+                    print('Warning:', value, 'is not a number for',
+                          name, '[Skipping]')
+                i = i-2
+            args.brightness = brightness
+            set_brightness(device_manager)
+        else:
+            print('Invalid brightness input, example:\n',
+                  '    -b 50\n',
+                  '    -b all 50\n',
+                  '    -b generic 50 logo 25\n',
+                  '    -b scroll 50 logo 25\n',
+                  '    -b left 25 right 75 logo 0 scroll 50')
 
     if (args.list_devices or args.list_devices_long or
             args.list_devices_long_human):
