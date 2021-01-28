@@ -3,6 +3,7 @@ import os
 import json
 import random
 
+
 def hex_to_decimal(hex_color):
     r = int(hex_color[0:2], 16)
     g = int(hex_color[2:4], 16)
@@ -19,7 +20,46 @@ def get_random_color_rgb():
     return r, g, b
 
 
-def write_settings_to_file(device, effect="", color="", dpi="", brightness=""):
+def load_settings_from_file(verbose):
+    home_dir = os.path.expanduser("~")
+    dir_name = settings.CACHE_DIR
+    file_name = settings.CACHE_FILE
+    path_and_file = os.path.join(home_dir, dir_name, file_name)
+    if verbose:
+        print('file:', path_and_file)
+    if os.path.isfile(path_and_file):
+        print("Feature incomplete, here are the command(s) to restore the settings:")
+        with open(path_and_file, 'r') as file:
+            data = json.load(file)
+        i = len(data)-1
+        while i > -1:
+            opts = "-d '"+data[i]['device_name']+"'"
+            if data[i]['color']:
+                opts += " -c"
+                for x in data[i]['color']:
+                    rgb = 0
+                    while rgb < 3:
+                        opts += " "+str(x[rgb])
+                        rgb += 1
+            if data[i]['dpi']:
+                opts += " --dpi "+str(data[i]['dpi'])
+            if data[i]['poll']:
+                opts += " --poll "+str(data[i]['poll'])
+            if data[i]['effect']:
+                opts += " -e "+str(data[i]['effect'])
+            if data[i]['brightness']:
+                opts += " -b"
+                for x in data[i]['brightness']:
+                    opts += " "+x+" "+str(data[i]['brightness'][x])
+
+            print('   ', 'razer-cli', opts)
+            i -= 1
+
+    else:
+        print('There is no settings file')
+
+
+def write_settings_to_file(device, effect="", color="", dpi="", brightness="", poll=""):
     """ Save settings to a file for possible later retrieval """
 
     home_dir = os.path.expanduser("~")
@@ -38,18 +78,21 @@ def write_settings_to_file(device, effect="", color="", dpi="", brightness=""):
     # Check if there already exists an entry for this device, if yes update it
     found_existing_settings = False
     with open(path_and_file, 'r') as file:
-         json_data = json.load(file)
-         for item in json_data:
-             if (item['device_name'] == device.name):
-                 found_existing_settings = True
-                 if (color != ""):
+        json_data = json.load(file)
+        for item in json_data:
+            if (item['device_name'] == device.name):
+                found_existing_settings = True
+                if (color != ""):
                     item['color'] = color
                  if (effect != ""):
                     item['effect'] = effect
                  if (dpi != ""):
                     item['dpi'] = dpi
+                 if (poll != ""):
+                    item['poll'] = poll
                  if (brightness != ""):
-                    item['brightness'] = brightness
+                    for i in brightness:
+                        item['brightness'][i] = brightness[i]
 
     # Update existing entry
     if found_existing_settings:
@@ -66,6 +109,8 @@ def write_settings_to_file(device, effect="", color="", dpi="", brightness=""):
             used_settings['effect'] = effect
         if (dpi != ""):
             used_settings['dpi'] = dpi
+        if (poll != ""):
+            used_settings['poll'] = poll
         if (brightness != ""):
             used_settings['brightness'] = brightness
         with open(path_and_file, mode='w') as file:

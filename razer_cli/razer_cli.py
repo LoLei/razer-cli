@@ -37,7 +37,7 @@ def parse_color_argument(color):
         g = int(color[1])
         b = int(color[2])
 
-    return r, g, b
+    return [r, g, b]
 
 
 def get_x_color():
@@ -54,31 +54,52 @@ def get_x_color():
     rgb = output.decode()
     r, g, b = util.hex_to_decimal(rgb)
 
-    return r, g, b
+    return [r, g, b]
 
 
 def set_color(color):
     """ Set the color either from the input argument or use a fallback color """
 
-    r = 0
-    g = 0
-    b = 0
+    RGB = []
 
     if(color):
         # Set colors from input argument
-        r, g, b = parse_color_argument(color)
+        stop = len(color)
+        i = 0
+        while i < stop:
+            if len(color[i]) > 3:
+                if not len(color[i]) == 6:
+                    print('color', len(RGB)+1,
+                          '(', color[i], ') looks to have a typo')
+                RGB.append(parse_color_argument([color[i]]))
+                i += 1
+            elif stop > i+2:
+                if len(color[i]) > 3 or len(color[i+1]) > 3 or len(color[i+2]) > 3:
+                    print('color', len(
+                        RGB)+1, '(', color[i], color[i+1], color[i+2], ') looks to have a typo')
+                rgb = [color[i], color[i+1], color[i+2]]
+                RGB.append(parse_color_argument(rgb))
+                i += 3
+            else:
+                print("Unexpected arguments for color")
+                break
+        #r, g, b = parse_color_argument(color)
 
     else:
         # Use X colors as fallback if no color argument is set
         # TODO: Maybe also add argument to pull colors from
-        # ~/.cache/wal.colors.jason
-        r, g, b = get_x_color()
+        # ~/.cache/wal.colors.json
+        RGB.append(get_x_color())
 
     if args.verbose:
-        print("RBG:", "\n",
-              '    ', r, g, b)
+        print("RBG:")
+        i = 0
+        stop = len(RGB)
+        while i < stop:
+            print('   ', RGB[i])
+            i += 1
 
-    return [r, g, b]
+    return RGB
 
 
 def get_effects_of_device(device):
@@ -195,6 +216,9 @@ def set_poll_rate(device_manager):
                                 device.name,
                                 args.poll))
 
+                    # Save used settings for this device to a file
+                    util.write_settings_to_file(device, poll=args.poll)
+
                     # Actually set Polling Rate
                     device.poll_rate = int(args.poll)
             else:
@@ -232,9 +256,6 @@ def set_brightness(device_manager):
                             print('        Setting brightness to:',
                                   brightness[i])
                         device.brightness = int(brightness['generic'])
-                        # Save used settings for this device to a file
-                        util.write_settings_to_file(
-                            device, brightness=brightness['generic'])
                     elif args.verbose:
                         print('        Device does not support brightness')
                 elif device.has('lighting_'+i+'_brightness'):
@@ -248,6 +269,8 @@ def set_brightness(device_manager):
                 elif args.verbose:
                     print('        Device does not support lighting_' +
                           i+'_brightness')
+            # Save used settings for this device to a file
+            util.write_settings_to_file(device, brightness=brightness)
 
 
 def reset_device_effect(device):
@@ -272,9 +295,9 @@ def set_effect_to_device(device, effect, color, effect_args=[]):
     # Save used settings for this device to a file
     util.write_settings_to_file(device, effect, color)
 
-    r = color[0]
-    g = color[1]
-    b = color[2]
+    r = color[0][0]
+    g = color[0][1]
+    b = color[0][2]
 
     if (effect == "static"):
         # Set the effect to static, requires colors in 0-255 range
@@ -424,6 +447,9 @@ def read_args():
                         "Razer products",
                         action="store_true")
 
+    parser.add_argument("--restore",
+                        help="Load last used settings",
+                        action="store_true")
     global args
     args = parser.parse_args()
 
@@ -458,6 +484,8 @@ def main():
                                       args.effect[1:])
         else:
             set_effect_to_all_devices(device_manager, args.effect, color)
+    if args.restore:
+        util.load_settings_from_file(args.verbose)
 
     if args.dpi:
         set_dpi(device_manager)
