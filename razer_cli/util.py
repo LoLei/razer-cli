@@ -41,13 +41,13 @@ def load_settings_from_file(verbose):
                     while rgb < 3:
                         opts += " "+str(x[rgb])
                         rgb += 1
-            if data[i]['dpi']:
+            if data[i].get('dpi'):
                 opts += " --dpi "+str(data[i]['dpi'])
-            if data[i]['poll']:
+            if data[i].get('poll'):
                 opts += " --poll "+str(data[i]['poll'])
-            if data[i]['effect']:
+            if data[i].get('effect'):
                 opts += " -e "+str(data[i]['effect'])
-            if data[i]['brightness']:
+            if data[i].get('brightness'):
                 opts += " -b"
                 for x in data[i]['brightness']:
                     opts += " "+x+" "+str(data[i]['brightness'][x])
@@ -84,13 +84,13 @@ def write_settings_to_file(device, effect="", color="", dpi="", brightness="", p
                 found_existing_settings = True
                 if (color != ""):
                     item['color'] = color
-                 if (effect != ""):
+                if (effect != ""):
                     item['effect'] = effect
-                 if (dpi != ""):
+                if (dpi != ""):
                     item['dpi'] = dpi
-                 if (poll != ""):
+                if (poll != ""):
                     item['poll'] = poll
-                 if (brightness != ""):
+                if (brightness != ""):
                     for i in brightness:
                         item['brightness'][i] = brightness[i]
 
