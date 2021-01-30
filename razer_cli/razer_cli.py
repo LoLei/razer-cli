@@ -36,13 +36,13 @@ def parse_color_argument(color):
             # RGB: Three base10 input arguments
             rgb = []
             for i in color:
-                if lower(color) == "rng":
+                if color.lower() == "rng":
                     rgb.append(util.randint(0, 255))
                 else:
                     rgb.append(int(color[i]))
         else:
             print("Unknown color input:", color)
-            rgb = get_random_color_rgb()
+            rgb = util.get_random_color_rgb()
 
     return rgb
 
@@ -302,7 +302,7 @@ def set_brightness(device_manager):
                 brightness['scroll'] = brightness['wheel']
                 del brightness['wheel']
                 if args.verbose:
-                   print('    Device does not support "wheel" assuming "scroll"')
+                    print('    Device does not support "wheel" assuming "scroll"')
             if args.verbose:
                 print('    Input data:', brightness)
             for i in brightness:
@@ -395,7 +395,7 @@ def set_effect_to_device(device, effects, color, zones):
                     elif effect == 'breath_triple':
                         used = 3
                         while len(color) < c_used+used:
-                           color.append(util.get_random_color_rgb())
+                            color.append(util.get_random_color_rgb())
                         r, g, b = get_rgb(color[c_used])
                         r2, g2, b2 = get_rgb(color[c_used+1])
                         r3, g3, b3 = get_rgb(color[c_used+2])
