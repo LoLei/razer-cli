@@ -478,7 +478,7 @@ def set_effect_to_device(device, effects, color, zones):
                             direction = int(arg[0])
                         if getattr(prop, effect)(direction) and args.verbose:
                             print("    Setting", zone, "to",
-                                  effect, ' in direction', time)
+                                  effect, ' in direction', direction)
                             support = True
                     elif effect == 'brightness':
                         used = 0
