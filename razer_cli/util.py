@@ -34,24 +34,24 @@ def load_settings_from_file(verbose):
         i = len(data)-1
         while i > -1:
             opts = "-d '"+data[i]['device_name']+"'"
-            if data[i]['color']:
+            if data[i].get('color'):
                 opts += " -c"
                 for x in data[i]['color']:
                     rgb = 0
                     while rgb < 3:
                         opts += " "+str(x[rgb])
                         rgb += 1
-            if data[i]['zones']:
+            if data[i].get('zones'):
                 opts += " -z"
                 for x in data[i]['zones']:
                     opts += " "+str(','.join(x))
-            if data[i]['dpi']:
+            if data[i].get('dpi'):
                 opts += " --dpi "+str(data[i]['dpi'])
-            if data[i]['poll']:
+            if data[i].get('poll'):
                 opts += " --poll "+str(data[i]['poll'])
-            if data[i]['effect']:
+            if data[i].get('effect'):
                 opts += " -e "+str(data[i]['effect'])
-            if data[i]['brightness']:
+            if data[i].get('brightness'):
                 opts += " -b"
                 for x in data[i]['brightness']:
                     opts += " "+x+" "+str(data[i]['brightness'][x])
