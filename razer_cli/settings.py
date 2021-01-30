@@ -1,40 +1,40 @@
 CACHE_DIR = ".cache/razer-cli"
 CACHE_FILE = "razer-cli-settings.json"
 
+# Effect names known to exist in the driver
 EFFECTS = [
-        'breath_dual',
-        'breath_random',
-        'breath_single',
-        'breath_triple',
-        'left_breath_single',
-        'left_reactive',
-        'left_static',
-        'logo_breath_single',
-        'logo_reactive',
-        'logo_static',
-        'pulsate',
-        'reactive',
-        'right_breath_single',
-        'right_reactive',
-        'right_static',
-        'ripple',
-        'ripple_random',
-        'scroll_breath_single',
-        'scroll_reactive',
-        'scroll_static',
-        'spectrum',
-        'starlight_dual',
-        'starlight_random',
-        'startlight_single',
-        'static',
-        'wave',
+    'none',
+    'brightness',
+    'breath_single',
+    'breath_dual',
+    'breath_triple',
+    'breath_random',
+    'reactive',
+    'ripple',
+    'ripple_random',
+    'spectrum',
+    'starlight_single',
+    'starlight_dual',
+    'starlight_random',
+    'static',
+    'wave'
 ]
 
 # These effects are not built-in the driver
 CUSTOM_EFFECTS = [
-        # Multiple colors - Either no additional argument and a random color is
-        # chosen for each key, or colors can be supplied which are then evenly
-        # distributed, for example razer-cli -e multicolor ff0000 00ff00
-        # 0000ff
-        'multicolor'
+    # Multiple colors - Either no additional argument and a random color is
+    # chosen for each key, or colors can be supplied which are then evenly
+    # distributed, for example razer-cli -e multicolor,3 -c ff0000 00ff00
+    # 0000ff
+    'multicolor'
+]
+
+# These are the know lighting zones built into the driver, generic is a custom
+# name for the entire device and not a specific zone
+ZONES = [
+    'generic',
+    'logo',
+    'scroll_wheel',
+    'left',
+    'right'
 ]
