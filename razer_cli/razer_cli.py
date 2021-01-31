@@ -48,16 +48,15 @@ def parse_color_argument(color):
 
 
 def parse_zones(zones_list):
-    everything = settings.ZONES
     if not zones_list:
         # Known zone names, generic is a fake name for internal use
-        return [everything]
+        return [settings.ZONES]
     zones = []
     stop = len(zones_list)
     i = 0
     while i < stop:
         if zones_list[i] == 'all':
-            zones.append(everything)
+            zones.append(settings.ZONES)
         else:
             zones.append(zones_list[i].split(','))
         i += 1
@@ -177,18 +176,16 @@ def list_devices(device_manager):
             print("   battery: {}".format(device.battery))
         if device.has('brightness'):
             print("   brightness: {}".format(device.brightness))
-        if device.has('lighting_logo_brightness'):
-            print("   brightness (logo): {}".format(
-                device.fx.misc.logo.brightness))
-        if device.has('lighting_scroll_brightness'):
-            print("   brightness (wheel): {}".format(
-                device.fx.misc.scroll_wheel.brightness))
-        if device.has('lighting_left_brightness'):
-            print("   brightness (left): {}".format(
-                device.fx.misc.left.brightness))
-        if device.has('lighting_right_brightness'):
-            print("   brightness (right): {}".format(
-                device.fx.misc.right.brightness))
+        for i in settings.ZONES:
+            if i == 'generic':
+                continue
+            zone = i
+            support = i
+            if i == 'scroll_wheel':
+                support = 'scroll'
+            if device.has('lighting_'+support+'_brightness'):
+                print("   brightness ("+i+"): {}".format(
+                    getattr(device.fx.misc, i).brightness))
         if device.has('serial'):
             print("   serial: {}".format(device.serial))
         if device.has('firmware_version'):
@@ -203,19 +200,19 @@ def list_devices(device_manager):
             elif args.verbose:
                 capabilitity['unsupported'].append(i)
 
-        join_str = ', '
+        glue_str = ', '
         start_str = ''
         if args.list_devices_long:
-            join_str = '\n      '
+            glue_str = '\n      '
             start_str = '\n     '
         print("   supported capabilities:"+start_str,
-              join_str.join(capabilitity['supported']))
+              glue_str.join(capabilitity['supported']))
         if args.verbose:
             print("   unsupported capabilities:"+start_str,
-                  join_str.join(capabilitity['unsupported']))
+                  glue_str.join(capabilitity['unsupported']))
         for i in device_effects:
             print('   lighting zone', i, 'supports:' +
-                  start_str, join_str.join(device_effects[i]))
+                  start_str, glue_str.join(device_effects[i]))
         print()
 
 
@@ -332,7 +329,7 @@ def set_brightness(device_manager):
 def reset_device_effect(device):
     # Set the effect to static, requires colors in 0-255 range
     device.fx.static(0, 0, 0)
-    for i in ['logo', 'scroll_wheel', 'left', 'right']:
+    for i in settings.ZONES:
         ele = getattr(device.fx.misc, i)
         if ele:
             ele.static(0, 0, 0)
@@ -350,6 +347,11 @@ def set_effect_to_device(device, effects, color, zones):
     c_used = 0
     i = 0
     stop = len(zones)
+    if len(effects) < stop:
+        stop = len(effects)
+        if args.verbose:
+            print("    Warning: Only", stop,
+                  "effects provided for", len(zones), "zones")
     while i < stop:
         arg = effects[i].split(',')
         effect = arg[0]
@@ -414,8 +416,8 @@ def set_effect_to_device(device, effects, color, zones):
                         else:
                             time = int(arg[0])
                         if getattr(prop, effect)(*color[c_used], time) and args.verbose:
-                            print("    Setting", zone, effect, "to:", *
-                                  color[c_used], '@ timing level', time)
+                            print("    Setting", zone, effect, "to:",
+                                  *color[c_used], '@ timing level', time)
                             support = True
                     elif effect == 'ripple':
                         used = 1
@@ -441,8 +443,8 @@ def set_effect_to_device(device, effects, color, zones):
                         else:
                             time = int(arg[0])
                         if getattr(prop, effect)(*color[c_used], time) and args.verbose:
-                            print("    Setting", zone, effect, "to:", *
-                                  color[c_used], '@ timing level', time)
+                            print("    Setting", zone, effect, "to:",
+                                  *color[c_used], '@ timing level', time)
                             support = True
                     elif effect == 'starlight_dual':
                         used = 2
@@ -701,9 +703,14 @@ def main():
                   "\nThis needs to be a number or 2 numbers separated by a command (800,1000)",
                   "\nWhen using 2 numbers you are setting the X/Y DPI separately in that order"
                   "\nYou can also use 'print' to see the dpi setting")
+        if 'list_devices' in args.manual or 'list_devices_long' in args.manual:
+            match = True
+            print('This list info about your razer products.')
+            print(
+                '\nUse the -v or --verbose flag to also show a devices unsupported capabilities')
         if not match:
             print(
-                "Manual entries exist for color, brightness, zone, effect, poll, and dpi")
+                "Manual entries exist for color, brightness, zone, effect, poll, dpi, and list_devices/list_devices_long")
         return
 
     # -------------------------------------------------------------------------
@@ -731,6 +738,10 @@ def main():
         if len(effects) == 1 and stop > 1:
             while len(effects) < stop:
                 effects.append(effects[0])
+        elif stop == 1 and len(effects) > 1:
+            stop = len(effects)
+            while len(zones) < stop:
+                zones.append(zones[0])
 
         set_effect_to_all_devices(device_manager, effects, color, zones)
     if args.restore:

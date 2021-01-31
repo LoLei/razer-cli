@@ -29,12 +29,13 @@ CUSTOM_EFFECTS = [
     'multicolor'
 ]
 
-# These are the know lighting zones built into the driver, generic is a custom
+# These are the known lighting zones built into the driver, generic is a custom
 # name for the entire device and not a specific zone
 ZONES = [
     'generic',
     'logo',
     'scroll_wheel',
     'left',
-    'right'
+    'right',
+    'backlight'
 ]
