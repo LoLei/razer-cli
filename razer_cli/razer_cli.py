@@ -36,10 +36,10 @@ def parse_color_argument(color):
             # RGB: Three base10 input arguments
             rgb = []
             for i in color:
-                if color.lower() == "rng":
+                if i.lower() == "rng":
                     rgb.append(util.randint(0, 255))
                 else:
-                    rgb.append(int(color[i]))
+                    rgb.append(int(i))
         else:
             print("Unknown color input:", color)
             rgb = util.get_random_color_rgb()
