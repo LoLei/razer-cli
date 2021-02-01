@@ -225,17 +225,17 @@ def set_dpi(device_manager):
                 if args.verbose:
                     print("Device {} is not have a DPI setting".format(device.name))
             elif args.dpi == "print":
-                dpi = str(device.dpi)[1:-1].split(', ')
+                dpi = device.dpi
                 if args.poll == "print":
                     if dpi[0] == dpi[1]:
                         print('dpi:', dpi[0])
                     else:
-                        print('dpi:', dpi[0], dpi[1])
+                        print('dpi:', *dpi)
                 else:
                     if dpi[0] == dpi[1]:
                         print(dpi[0])
                     else:
-                        print(dpi[0], dpi[1])
+                        print(*dpi)
             else:
                 if args.verbose:
                     print("Setting DPI of device {} to {}".format(device.name,
@@ -337,8 +337,9 @@ def reset_device_effect(device):
 
 def set_effect_to_device(device, effects, color, zones):
     # Known Effects: advanced, breath_dual, breath_random, breath_single,
-    #    breath_triple, none, reactive, ripple, ripple_random, spectrum,
-    #    starlight_dual, starlight_random, starlight_single, static, wave
+    #    breath_triple, blinking, none, reactive, ripple, ripple_random,
+    #    pulsate, spectrum, starlight_dual, starlight_random,
+    #    starlight_single, static, wave
 
     # Reset device effect to blank (but why? oh multicolor is why)
     # Perhaps we should check the settings file for multicolor?
@@ -355,6 +356,8 @@ def set_effect_to_device(device, effects, color, zones):
     while i < stop:
         arg = effects[i].split(',')
         effect = arg[0]
+        if effect not in settings.EFFECTS and effect not in settings.CUSTOM_EFFECTS:
+            print("    Warning:", effect, "is not a known effect.")
         arg.pop(0)
         used = 0
         for zone in zones[i]:
@@ -376,7 +379,7 @@ def set_effect_to_device(device, effects, color, zones):
                         if getattr(prop, effect)() and args.verbose:
                             print("    Setting", zone, "to", effect)
                             support = True
-                    elif effect in ['static', 'breath_single']:
+                    elif effect in ['static', 'breath_single', 'blinking', 'pulsate']:
                         used = 1
                         if len(color) < c_used+used:
                             color.append(util.get_random_color_rgb())
