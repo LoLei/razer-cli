@@ -1,7 +1,7 @@
 from razer_cli import settings
 import os
 import json
-import random
+from random import randint
 
 
 def hex_to_decimal(hex_color):
@@ -9,15 +9,15 @@ def hex_to_decimal(hex_color):
     g = int(hex_color[2:4], 16)
     b = int(hex_color[4:6], 16)
 
-    return r, g, b
+    return [r, g, b]
 
 
 def get_random_color_rgb():
-    r = random.randint(0, 255)
-    g = random.randint(0, 255)
-    b = random.randint(0, 255)
+    r = randint(0, 255)
+    g = randint(0, 255)
+    b = randint(0, 255)
 
-    return r, g, b
+    return [r, g, b]
 
 
 def load_settings_from_file(verbose):
@@ -34,13 +34,17 @@ def load_settings_from_file(verbose):
         i = len(data)-1
         while i > -1:
             opts = "-d '"+data[i]['device_name']+"'"
-            if data[i]['color']:
+            if data[i].get('color'):
                 opts += " -c"
                 for x in data[i]['color']:
                     rgb = 0
                     while rgb < 3:
                         opts += " "+str(x[rgb])
                         rgb += 1
+            if data[i].get('zones'):
+                opts += " -z"
+                for x in data[i]['zones']:
+                    opts += " "+str(','.join(x))
             if data[i].get('dpi'):
                 opts += " --dpi "+str(data[i]['dpi'])
             if data[i].get('poll'):
@@ -59,7 +63,7 @@ def load_settings_from_file(verbose):
         print('There is no settings file')
 
 
-def write_settings_to_file(device, effect="", color="", dpi="", brightness="", poll=""):
+def write_settings_to_file(device, effect="", color="", dpi="", brightness="", poll="", zones=""):
     """ Save settings to a file for possible later retrieval """
 
     home_dir = os.path.expanduser("~")
@@ -84,6 +88,8 @@ def write_settings_to_file(device, effect="", color="", dpi="", brightness="", p
                 found_existing_settings = True
                 if (color != ""):
                     item['color'] = color
+                if (zones != ""):
+                    item['zones'] = zones
                 if (effect != ""):
                     item['effect'] = effect
                 if (dpi != ""):
@@ -105,6 +111,8 @@ def write_settings_to_file(device, effect="", color="", dpi="", brightness="", p
         used_settings['device_name'] = device.name
         if (color != ""):
             used_settings['color'] = color
+        if (zones != ""):
+            used_settings['zones'] = zones
         if (effect != ""):
             used_settings['effect'] = effect
         if (dpi != ""):

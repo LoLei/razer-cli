@@ -23,21 +23,44 @@ args = 0
 
 
 def parse_color_argument(color):
-    r = 0
-    g = 0
-    b = 0
 
     if len(color) == 1:
         # Hex: Just one input argument
         rgb = color[0]
-        r, g, b = util.hex_to_decimal(rgb)
-    elif len(color) == 3:
-        # RGB: Three base10 input arguments
-        r = int(color[0])
-        g = int(color[1])
-        b = int(color[2])
+        if rgb.lower() == "random":
+            rgb = util.get_random_color_rgb()
+        else:
+            rgb = util.hex_to_decimal(rgb)
+    else:
+        if len(color) == 3:
+            # RGB: Three base10 input arguments
+            rgb = []
+            for i in color:
+                if i.lower() == "rng":
+                    rgb.append(util.randint(0, 255))
+                else:
+                    rgb.append(int(i))
+        else:
+            print("Unknown color input:", color)
+            rgb = util.get_random_color_rgb()
 
-    return [r, g, b]
+    return rgb
+
+
+def parse_zones(zones_list):
+    if not zones_list:
+        # Known zone names, generic is a fake name for internal use
+        return [settings.ZONES]
+    zones = []
+    stop = len(zones_list)
+    i = 0
+    while i < stop:
+        if zones_list[i] == 'all':
+            zones.append(settings.ZONES)
+        else:
+            zones.append(zones_list[i].split(','))
+        i += 1
+    return zones
 
 
 def get_x_color():
@@ -49,12 +72,15 @@ def get_x_color():
         shell=True).strip()
 
     if not output:
-        return 0, 0, 0
+        #return [0, 0, 0]
+        return util.get_random_color_rgb()
 
-    rgb = output.decode()
-    r, g, b = util.hex_to_decimal(rgb)
+    return util.hex_to_decimal(output.decode())
 
-    return [r, g, b]
+
+def get_rgb(c):
+    # Input array; output variables
+    return c[0], c[1], c[2]
 
 
 def set_color(color):
@@ -88,22 +114,39 @@ def set_color(color):
     else:
         # Use X colors as fallback if no color argument is set
         # TODO: Maybe also add argument to pull colors from
-        # ~/.cache/wal.colors.json
+        # ~/.cache/wal.colors.jason
         RGB.append(get_x_color())
 
     if args.verbose:
-        print("RBG:")
+        print("RGB:")
         i = 0
         stop = len(RGB)
         while i < stop:
             print('   ', RGB[i])
             i += 1
+        print('    If more are needed random ones will be generated')
 
     return RGB
 
 
 def get_effects_of_device(device):
-    return [effect for effect in settings.EFFECTS if device.fx.has(effect)]
+    zones = {}
+    delete = []
+    for i in settings.ZONES:
+        if i == 'generic':
+            prop = device.fx
+        else:
+            prop = getattr(device.fx.misc, i)
+        zones[i] = [
+            effect for effect in settings.EFFECTS if hasattr(prop, effect)]
+        if(hasattr(prop, 'advanced')):
+            for e in settings.CUSTOM_EFFECTS:
+                zones[i].append(e)
+        if len(zones[i]) == 0:
+            delete.append(i)
+    for i in delete:
+        zones.pop(i)
+    return zones
 
 
 def list_devices(device_manager):
@@ -133,34 +176,44 @@ def list_devices(device_manager):
             print("   battery: {}".format(device.battery))
         if device.has('brightness'):
             print("   brightness: {}".format(device.brightness))
-        if device.has('lighting_logo_brightness'):
-            print("   brightness (logo): {}".format(
-                device.fx.misc.logo.brightness))
-        if device.has('lighting_scroll_brightness'):
-            print("   brightness (wheel): {}".format(
-                device.fx.misc.scroll_wheel.brightness))
-        if device.has('lighting_left_brightness'):
-            print("   brightness (left): {}".format(
-                device.fx.misc.left.brightness))
-        if device.has('lighting_right_brightness'):
-            print("   brightness (right): {}".format(
-                device.fx.misc.right.brightness))
+        for i in settings.ZONES:
+            if i == 'generic':
+                continue
+            zone = i
+            support = i
+            if i == 'scroll_wheel':
+                support = 'scroll'
+            if device.has('lighting_'+support+'_brightness'):
+                print("   brightness ("+i+"): {}".format(
+                    getattr(device.fx.misc, i).brightness))
         if device.has('serial'):
             print("   serial: {}".format(device.serial))
         if device.has('firmware_version'):
             print("   firmware version: {}".format(device.firmware_version))
         print("   driver version: {}".format(device.driver_version))
 
+        capabilitity = {"supported": [], "unsupported": []}
         device_effects = get_effects_of_device(device)
-        print("   effects: {}".format(device_effects))
+        for i in device.capabilities:
+            if device.capabilities[i]:
+                capabilitity['supported'].append(i)
+            elif args.verbose:
+                capabilitity['unsupported'].append(i)
 
-        if (args.list_devices_long):
-            print("   capabilities: {}".format(device.capabilities))
-        elif (args.list_devices_long_human):
-            print("   capabilities:")
-            for i in device.capabilities:
-                print("      ", i, "=", device.capabilities[i])
-    print()
+        glue_str = ', '
+        start_str = ''
+        if args.list_devices_long:
+            glue_str = '\n      '
+            start_str = '\n     '
+        print("   supported capabilities:"+start_str,
+              glue_str.join(capabilitity['supported']))
+        if args.verbose:
+            print("   unsupported capabilities:"+start_str,
+                  glue_str.join(capabilitity['unsupported']))
+        for i in device_effects:
+            print('   lighting zone', i, 'supports:' +
+                  start_str, glue_str.join(device_effects[i]))
+        print()
 
 
 def set_dpi(device_manager):
@@ -168,21 +221,21 @@ def set_dpi(device_manager):
     for device in device_manager.devices:
         # If -d argument is set, only set those devices
         if (args.device and device.name in args.device) or (not args.device):
-            if (device.type != "mouse"):
+            if (not device.has('dpi')):
                 if args.verbose:
-                    print("Device {} is not a mouse".format(device.name))
+                    print("Device {} is not have a DPI setting".format(device.name))
             elif args.dpi == "print":
-                dpi = str(device.dpi)[1:-1].split(', ')
+                dpi = device.dpi
                 if args.poll == "print":
                     if dpi[0] == dpi[1]:
                         print('dpi:', dpi[0])
                     else:
-                        print('dpi:', dpi[0], dpi[1])
+                        print('dpi:', *dpi)
                 else:
                     if dpi[0] == dpi[1]:
                         print(dpi[0])
                     else:
-                        print(dpi[0], dpi[1])
+                        print(*dpi)
             else:
                 if args.verbose:
                     print("Setting DPI of device {} to {}".format(device.name,
@@ -246,7 +299,7 @@ def set_brightness(device_manager):
                 brightness['scroll'] = brightness['wheel']
                 del brightness['wheel']
                 if args.verbose:
-                   print('    Device does not support "wheel" assuming "scroll"')
+                    print('    Device does not support "wheel" assuming "scroll"')
             if args.verbose:
                 print('    Input data:', brightness)
             for i in brightness:
@@ -275,118 +328,233 @@ def set_brightness(device_manager):
 
 def reset_device_effect(device):
     # Set the effect to static, requires colors in 0-255 range
-    try:
-        # Avoid checking for device type
-        # Keyboard - doesn't throw
-        device.fx.static(0, 0, 0)
-        # Mouse - throws
-        device.fx.misc.logo.static(0, 0, 0)
-        device.fx.misc.scroll_wheel.static(0, 0, 0)
-        device.fx.misc.left.static(0, 0, 0)
-        device.fx.misc.right.static(0, 0, 0)
-    except:
-        pass
+    device.fx.static(0, 0, 0)
+    for i in settings.ZONES:
+        ele = getattr(device.fx.misc, i)
+        if ele:
+            ele.static(0, 0, 0)
 
 
-def set_effect_to_device(device, effect, color, effect_args=[]):
-    # Reset device effect to blank
-    reset_device_effect(device)
+def set_effect_to_device(device, effects, color, zones):
+    # Known Effects: advanced, breath_dual, breath_random, breath_single,
+    #    breath_triple, blinking, none, reactive, ripple, ripple_random,
+    #    pulsate, spectrum, starlight_dual, starlight_random,
+    #    starlight_single, static, wave
 
+    # Reset device effect to blank (but why? oh multicolor is why)
+    # Perhaps we should check the settings file for multicolor?
+    #reset_device_effect(device)
+
+    c_used = 0
+    i = 0
+    stop = len(zones)
+    if len(effects) < stop:
+        stop = len(effects)
+        if args.verbose:
+            print("    Warning: Only", stop,
+                  "effects provided for", len(zones), "zones")
+    while i < stop:
+        arg = effects[i].split(',')
+        effect = arg[0]
+        if effect not in settings.EFFECTS and effect not in settings.CUSTOM_EFFECTS:
+            print("    Warning:", effect, "is not a known effect.")
+        arg.pop(0)
+        used = 0
+        for zone in zones[i]:
+            if zone == 'generic':
+                prop = device.fx
+            else:
+                prop = False
+                if not hasattr(device.fx.misc, zone) and zone in ["scroll", "wheel"]:
+                    if args.verbose:
+                        print('   ', zone, 'is not valid, assuming scroll_wheel')
+                    zone = "scroll_wheel"
+                if hasattr(device.fx.misc, zone):
+                    prop = getattr(device.fx.misc, zone)
+            if prop:
+                support = False
+                if hasattr(prop, effect) or effect in ["multicolor"]:
+                    if effect in ['none', 'breath_random', 'spectrum']:
+                        used = 0
+                        if getattr(prop, effect)() and args.verbose:
+                            print("    Setting", zone, "to", effect)
+                            support = True
+                    elif effect in ['static', 'breath_single', 'blinking', 'pulsate']:
+                        used = 1
+                        if len(color) < c_used+used:
+                            color.append(util.get_random_color_rgb())
+                        r, g, b = get_rgb(color[c_used])
+                        if getattr(prop, effect)(r, g, b) and args.verbose:
+                            print("    Setting", zone, effect, "to:", r, g, b)
+                            support = True
+                    elif effect == 'breath_dual':
+                        used = 2
+                        while len(color) < c_used+used:
+                            color.append(util.get_random_color_rgb())
+                        r, g, b = get_rgb(color[c_used])
+                        r2, g2, b2 = get_rgb(color[c_used+1])
+                        if getattr(prop, effect)(r, g, b, r2, g2, b2) and args.verbose:
+                            print("    Setting", zone, effect,
+                                  "to:\n        [", r, g, b, ']\n        [', r2, g2, b2, ']')
+                            support = True
+                    elif effect == 'breath_triple':
+                        used = 3
+                        while len(color) < c_used+used:
+                            color.append(util.get_random_color_rgb())
+                        r, g, b = get_rgb(color[c_used])
+                        r2, g2, b2 = get_rgb(color[c_used+1])
+                        r3, g3, b3 = get_rgb(color[c_used+2])
+                        if getattr(prop, effect)(r, g, b, r2, g2, b2, r3, g3, b3) and args.verbose:
+                            print("    Setting", zone, effect,
+                                  "to:\n        [", r, g, b, ']\n        [', r2, g2, b2, ']\n        [', r3, g3, b3, ']')
+                            support = True
+                    elif effect == 'reactive':
+                        used = 1
+                        if len(color) < c_used+used:
+                            color.append(util.get_random_color_rgb())
+                        # These are just numbers 1-4
+                        #time = [razer_constants.REACTIVE_500MS, razer_constants.REACTIVE_1000MS, razer_constants.REACTIVE_1500MS, razer_constants.REACTIVE_2000MS]
+                        if len(arg) == 0:
+                            time = util.randint(1, 4)
+                        else:
+                            time = int(arg[0])
+                        if getattr(prop, effect)(*color[c_used], time) and args.verbose:
+                            print("    Setting", zone, effect, "to:",
+                                  *color[c_used], '@ timing level', time)
+                            support = True
+                    elif effect == 'ripple':
+                        used = 1
+                        if len(color) < c_used+used:
+                            color.append(util.get_random_color_rgb())
+                        r, g, b = get_rgb(color[c_used])
+                        if getattr(prop, effect)(r, g, b, razer_constants.RIPPLE_REFRESH_RATE) and args.verbose:
+                            print("    Setting", zone, effect, "to:", r, g, b)
+                            support = True
+                    elif effect == 'ripple_random':
+                        used = 0
+                        if getattr(prop, effect)(razer_constants.RIPPLE_REFRESH_RATE) and args.verbose:
+                            print("    Setting", zone, "to", effect)
+                            support = True
+                    elif effect == 'starlight_single':
+                        used = 1
+                        if len(color) < c_used+used:
+                            color.append(util.get_random_color_rgb())
+                        # These are just numbers 1-3
+                        #time = [razer_constants.STARLIGHT_FAST, razer_constants.STARLIGHT_NORMAL, razer_constants.STARLIGHT_SLOW]
+                        if len(arg) == 0:
+                            time = util.randint(1, 3)
+                        else:
+                            time = int(arg[0])
+                        if getattr(prop, effect)(*color[c_used], time) and args.verbose:
+                            print("    Setting", zone, effect, "to:",
+                                  *color[c_used], '@ timing level', time)
+                            support = True
+                    elif effect == 'starlight_dual':
+                        used = 2
+                        if len(color) < c_used+used:
+                            color.append(util.get_random_color_rgb())
+                        # These are just numbers 1-3
+                        #time = [razer_constants.STARLIGHT_FAST, razer_constants.STARLIGHT_NORMAL, razer_constants.STARLIGHT_SLOW]
+                        if len(arg) == 0:
+                            time = util.randint(1, 3)
+                        else:
+                            time = int(arg[0])
+                        if getattr(prop, effect)(*color[c_used], *color[c_used+1], time) and args.verbose:
+                            print("    Setting", zone, effect, " @ timing level", time,
+                                  "to:\n        [", *color[c_used], ']\n        [', *color[c_used+1])
+                            support = True
+                    elif effect == 'starlight_random':
+                        used = 0
+                        if len(arg) == 0:
+                            time = util.randint(1, 3)
+                        else:
+                            time = int(arg[0])
+                        if getattr(prop, effect)(time) and args.verbose:
+                            print("    Setting", zone, "to",
+                                  effect, '@ timing level', time)
+                            support = True
+                    elif effect == 'wave':
+                        used = 0
+                        # These are just numbers 1-2
+                        #direction=[razer_constants.WAVE_LEFT, razer_constants.WAVE_RIGHT]
+                        if len(arg) == 0:
+                            direction = util.randint(1, 2)
+                        else:
+                            direction = int(arg[0])
+                        if getattr(prop, effect)(direction) and args.verbose:
+                            print("    Setting", zone, "to",
+                                  effect, ' in direction', direction)
+                            support = True
+                    elif effect == 'brightness':
+                        used = 0
+                        if len(arg) == 0:
+                            b = 100
+                        else:
+                            b = int(arg[0])
+                        prop.brightness = b
+                        if args.verbose:
+                            print("    Setting", zone, effect, 'to', b)
+                            support = True
+                    elif effect == 'multicolor':
+                        if hasattr(prop, 'advanced'):
+                            if len(arg) > 0:
+                                used = int(arg[0])
+                            else:
+                                used = 0
+                            while len(color) < c_used+used:
+                                color.append(util.get_random_color_rgb())
+                            cols = prop.advanced.cols
+                            rows = prop.advanced.rows
+                            if used == 0:
+                                colors_to_dist = [
+                                    util.get_random_color_rgb() for _ in range(cols*rows)]
+                            else:
+                                colors_to_dist = []
+                                end = len(color)
+                                start = c_used
+                                while start < end:
+                                    colors_to_dist.append(color[start])
+                                    start += 1
+                            try:
+                                counter = 0
+                                for row in range(rows):
+                                    for col in range(cols):
+                                        device.fx.advanced.matrix.set(
+                                            row, col, colors_to_dist[counter % len(colors_to_dist)])
+                                        counter += 1
+                                # device.fx.advanced.draw_fb_or()
+                                device.fx.advanced.draw()
+                                if args.verbose:
+                                    print("    Setting", zone, "to",
+                                          effect, "\n        ", colors_to_dist)
+                                support = True
+                            except (AssertionError, ValueError) as e:
+                                if args.verbose:
+                                    print("    Warning: " + str(e))
+                    else:
+                        print("    Sorry", effect, "is supported by the hardware, but this software does not\n",
+                              "       Consider makeing a bug report:\n",
+                              "           https://github.com/LoLei/razer-cli/issues")
+                if args.verbose and not support:
+                    print("   ", zone, "does not support", effect)
+            elif args.verbose:
+                print("    Device does not support", zone)
+        c_used += used
+        i += 1
     # Save used settings for this device to a file
-    util.write_settings_to_file(device, effect, color)
-
-    r = color[0][0]
-    g = color[0][1]
-    b = color[0][2]
-
-    if (effect == "static"):
-        # Set the effect to static, requires colors in 0-255 range
-        try:
-            # Avoid checking for device type
-            # Keyboard - doesn't throw
-            device.fx.static(r, g, b)
-            # Mouse - throws
-            device.fx.misc.logo.static(r, g, b)
-            device.fx.misc.scroll_wheel.static(r, g, b)
-            device.fx.misc.left.static(r, g, b)
-            device.fx.misc.right.static(r, g, b)
-        except:
-            pass
-
-    elif (effect == "breath_single"):
-        device.fx.breath_single(r, g, b)
-
-    elif (effect == "reactive"):
-        times = [razer_constants.REACTIVE_500MS, razer_constants.REACTIVE_1000MS,
-                 razer_constants.REACTIVE_1500MS, razer_constants.REACTIVE_2000MS]
-        device.fx.reactive(r, g, b, times[3])
-
-    elif (effect == "ripple"):
-        device.fx.ripple(r, g, b, razer_constants.RIPPLE_REFRESH_RATE)
-
-    elif (effect == "starlight_random"):
-        device.fx.starlight_random(razer_constants.STARLIGHT_NORMAL)
-
-    elif (effect == "starlight_single"):
-        device.fx.starlight_single(r, g, b, razer_constants.STARLIGHT_NORMAL)
-
-    elif (effect == "multicolor"):
-        cols = device.fx.advanced.cols
-        rows = device.fx.advanced.rows
-
-        # Use supplied colors and distribute them evenly if colors are supplied
-        colors_to_dist = []
-        if effect_args:
-            colors_to_dist = [util.hex_to_decimal(c) for c in effect_args]
-        # Use random colors if no colors are supplied
-        else:
-            colors_to_dist = [util.get_random_color_rgb() for _ in
-                              range(cols*rows)]
-
-        try:
-            counter = 0
-            for row in range(rows):
-                for col in range(cols):
-                    device.fx.advanced.matrix.set(row, col,
-                                                  colors_to_dist[counter % len(colors_to_dist)])
-                    counter += 1
-            # device.fx.advanced.draw_fb_or()
-            device.fx.advanced.draw()
-        except (AssertionError, ValueError) as e:
-            if args.verbose:
-                print("Warning: " + str(e))
-
-    else:
-        print("Effect is supported by device but not yet implemented.\n"
-              "Consider opening a PR:\n"
-              "https://github.com/LoLei/razer-x-color/pulls")
-        return
-
-    print("Setting device: {} to effect {}".format(device.name,
-                                                   effect))
+    util.write_settings_to_file(device, effects, color, zones=zones)
 
 
-def set_effect_to_all_devices(device_manager, input_effect, color,
-                              effect_args=[]):
+def set_effect_to_all_devices(device_manager, input_effects, color, zones):
     """ Set one effect to all connected devices, if they support that effect """
 
     # Iterate over each device and set the effect
     for device in device_manager.devices:
         # If -d argument is set, only set those devices
         if (args.device and device.name in args.device) or (not args.device):
-            if not input_effect:
-                effect_to_use = "static"
-            else:
-                effect_to_use = input_effect
-
-            if ((not device.fx.has(effect_to_use)) and (effect_to_use not in
-                                                        settings.CUSTOM_EFFECTS)):
-                effect_to_use = "static"
-                if args.verbose:
-                    print("Device does not support chosen effect (yet). Using "
-                          " static as fallback...")
-
-            set_effect_to_device(device, effect_to_use, color, effect_args)
+            if args.verbose:
+                print('Setting effects for {}:'.format(device.name))
+            set_effect_to_device(device, input_effects, color, zones)
 
 
 def read_args():
@@ -394,39 +562,40 @@ def read_args():
     # ARGS
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-e", "--effect",
-                        help="set effect",
-                        action="store",
-                        nargs="+")
+    parser.add_argument("-man", "--manual", nargs="*",
+                        help="Print help details for given feature(s)",
+                        action="store")
 
     parser.add_argument("-v", "--verbose",
                         help="increase output verbosity",
                         action="store_true")
 
-    parser.add_argument("-c", "--color", nargs="+",
-                        help="choose color (default: X color1), use one argument "
-                             "for hex, or three for base10 rgb")
-
-    parser.add_argument("-l", "--list_devices",
-                        help="list available devices and their supported effects",
-                        action="store_true")
-
-    parser.add_argument("-ll", "--list_devices_long",
-                        help="list available devices and all their capabilities",
-                        action="store_true")
-
-    parser.add_argument("-llh", "--list_devices_long_human",
-                        help="list devices and capabilities human readable",
-                        action="store_true")
+    parser.add_argument("-d", "--device", nargs="+",
+                        help="only affect these devices, same name as output "
+                             "of -l")
 
     parser.add_argument("-a", "--automatic",
                         help="try to find colors and set them to all devices "
                              "without user arguments, uses X or pywal colors",
                         action="store_true")
 
-    parser.add_argument("-d", "--device", nargs="+",
-                        help="only affect these devices, same name as output "
-                             "of -l")
+    parser.add_argument("-e", "--effect",
+                        help="set effect",
+                        action="store",
+                        nargs="+")
+
+    parser.add_argument("-c", "--color", nargs="+",
+                        help="choose color (default: X color1), use one argument "
+                             "for hex, or three for base10 rgb")
+
+    parser.add_argument("-z", "--zone", nargs="+",
+                        dest='zones',
+                        help="choose zone for color(s)")
+
+    parser.add_argument("-b", "--brightness", nargs="+",
+                        help="set brightness of device",
+                        dest='brightness',
+                        action="store")
 
     parser.add_argument("--dpi", help="set DPI of device"
                         " (use print as a value to show it)",
@@ -437,10 +606,13 @@ def read_args():
                         " (use print as a value to show it)",
                         action="store")
 
-    parser.add_argument("-b", "--brightness", nargs="+",
-                        help="set brightness of device",
-                        dest='brightness',
-                        action="store")
+    parser.add_argument("-l", "--list_devices",
+                        help="list available devices and their supported capabilities/effects",
+                        action="store_true")
+
+    parser.add_argument("-ll", "--list_devices_long",
+                        help="list available devices and list their supported capabilities/effects",
+                        action="store_true")
 
     parser.add_argument("--sync",
                         help="sync lighting effects to all supported "
@@ -462,6 +634,87 @@ def main():
     """ Main entry point of the app """
 
     read_args()
+    if not args.manual == None:
+        match = False
+        if 'color' in args.manual:
+            match = True
+            print("Color arguments can be and of the following:\n",
+                  "   Hex Codes (FF00FF)\n",
+                  "   RGB (255 0 255)\n",
+                  "   RNG (RANDOM)\n",
+                  "   You can mix these as you please EG:\n",
+                  "       --color RANDOM 255 0 255 FF00FF\n",
+                  "   If a lack of colors are provided random ones will be generated\n")
+        if 'brightness' in args.manual:
+            match = True
+            print("Brightness arguments can be and of the following:\n",
+                  "   The following words are valid:\n",
+                  "       "+(', '.join(settings.ZONES))+", and all\n",
+                  "   -b 50 (set everything to 50)\n",
+                  "   -b all 50 (set everything to 50)\n",
+                  "   -b generic 50 logo 25 (set generic to 50 and logo to 25)\n",
+                  "   -b scroll 50 logo 25 (set scroll to 50 and logo to 25)\n",
+                  "   -b left 25 right 75 logo 0 scroll 50 (set left to 25, right to 75, and scroll to 25)\n")
+        if 'zone' in args.manual:
+            match = True
+            print("Zone arguments can be name your device supports",
+                  "\nKnown zone names are " +
+                  (', '.join(settings.ZONES))+", and all.",
+                  "\nEach zone group gets it own color(s)"
+                  "\nFor example if your zone is '-z logo,scroll_wheel' this will use the same color(s) for both zones",
+                  "\nhowever if you use '-z logo scroll_wheel' this will different color(s) for each zones.",
+                  "\nYou can mix these are you see fit for example: '-z logo,scroll_wheel left right'",
+                  "\nEach zone argument gets it own effect, the default zone is '" +
+                  (','.join(settings.ZONES))+"'",
+                  "\nAll is treated as '"+(','.join(settings.ZONES))+"'\n")
+        if 'effect' in args.manual:
+            match = True
+            print("Effect arguments can any of the following:\n",
+                  "   breath_dual, breath_random, breath_single, breath_triple, none, reactive, ripple, ripple_random, spectrum, starlight_dual, starlight_random, starlight_single, static, wave, and multicolor",
+                  "\nEach effect is applied to 1 zone, remember that 'logo,right' is 1 zone and 'left right' is 2 zones"
+                  "\nThe following effects support a second argument by adding a comma followed by a number:\n",
+                  "   brightness, reactive, starlight_single, starlight_dual, starlight_random, wave, and multicolor\n",
+                  "   brightness,[0-100]\n",
+                  "       % brightness (this is the PWM Duty Cycle)\n",
+                  "       If not specified it will be 100\n",
+                  "       This is the same things as --brightness\n",
+                  "       Example usage:\n",
+                  "           razer-cli -e static brightness,75 -z logo logo -c FF0000",
+                  "   reactive,[1-4]\n",
+                  "       1 = 500ms, 2 = 1000ms, 3 = 1500ms, and 4 = 2000ms\n",
+                  "       If not specified it will be chosen at random\n",
+                  "   starlight_single,[1-3], starlight_dual,[1-3], and starlight_random,[1-3]\n",
+                  "       1 = fast, 2 = normal, and 3 = slow\n",
+                  "       If not specified it will be chosen at random\n",
+                  "   wave,[1-2]\n",
+                  "       1 = right and 2 = left\n",
+                  "       If not specified it will be chosen at random\n",
+                  "   multicolor,[0-∞]\n",
+                  "       0 = assign random colors for everything (does not consume colors)\n",
+                  "       1-∞ = the number of colors to use from -c\n",
+                  "       This defaults to 0\n",
+                  "   The following effects do NOT consume colors:\n",
+                  "       none, brightness, breath_random, spectrum, starlight_random, and wave\n")
+        if 'poll' in args.manual:
+            match = True
+            print("Poll lets you assign the polling rate of a device (like a mouse)",
+                  "\nThis can be set to 125, 500, or 1000; 500 is default",
+                  "\nYou can also use 'print' to see the poll rate\n")
+        if 'dpi' in args.manual:
+            match = True
+            print("DPI lets you assign the dpi a device (like a mouse)",
+                  "\nThis needs to be a number or 2 numbers separated by a command (800,1000)",
+                  "\nWhen using 2 numbers you are setting the X/Y DPI separately in that order"
+                  "\nYou can also use 'print' to see the dpi setting")
+        if 'list_devices' in args.manual or 'list_devices_long' in args.manual:
+            match = True
+            print('This list info about your razer products.')
+            print(
+                '\nUse the -v or --verbose flag to also show a devices unsupported capabilities')
+        if not match:
+            print(
+                "Manual entries exist for color, brightness, zone, effect, poll, dpi, and list_devices/list_devices_long")
+        return
 
     # -------------------------------------------------------------------------
     # DEVICES
@@ -478,12 +731,22 @@ def main():
         # ----------------------------------------------------------------------
         # COLORS
         color = set_color(args.color)
-
-        if args.effect:
-            set_effect_to_all_devices(device_manager, args.effect[0], color,
-                                      args.effect[1:])
+        zones = parse_zones(args.zones)
+        if not args.effect:
+            effects = ['static']
         else:
-            set_effect_to_all_devices(device_manager, args.effect, color)
+            effects = args.effect
+
+        stop = len(zones)
+        if len(effects) == 1 and stop > 1:
+            while len(effects) < stop:
+                effects.append(effects[0])
+        elif stop == 1 and len(effects) > 1:
+            stop = len(effects)
+            while len(zones) < stop:
+                zones.append(zones[0])
+
+        set_effect_to_all_devices(device_manager, effects, color, zones)
     if args.restore:
         util.load_settings_from_file(args.verbose)
 
@@ -499,6 +762,7 @@ def main():
             args.brightness = {"all": args.brightness[0]}
             set_brightness(device_manager)
         elif i % 2 == 0:
+            # Even number of arguments
             brightness = {}
             i = i-1
             while i > -1:
@@ -514,15 +778,9 @@ def main():
             args.brightness = brightness
             set_brightness(device_manager)
         else:
-            print('Invalid brightness input, example:\n',
-                  '    -b 50\n',
-                  '    -b all 50\n',
-                  '    -b generic 50 logo 25\n',
-                  '    -b scroll 50 logo 25\n',
-                  '    -b left 25 right 75 logo 0 scroll 50')
+            print("Invalid brightness input, see `razer-cli --manual brightness'")
 
-    if (args.list_devices or args.list_devices_long or
-            args.list_devices_long_human):
+    if args.list_devices or args.list_devices_long:
         list_devices(device_manager)
 
 
