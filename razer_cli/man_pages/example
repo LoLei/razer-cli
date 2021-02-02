@@ -1,0 +1,58 @@
+razer-cli --effect multicolor spectrum brightness,50 breath_dual --zone generic logo,scroll logo,wheel logo -v
+ Setting effects for Razer DeathAdder Elite:
+    generic:
+        Setting multicolor
+           [[99, 4, 155], [192, 108, 166]]
+    logo:
+        Setting to spectrum
+        Setting brightness to 50
+        No color given, using: [[75, 234, 74], [249, 153, 44], [0, 0, 255]]
+        Setting breath_dual to:
+           [ 75 234 74 ]
+           [ 249 153 44 ]
+    scroll:
+        not valid, assuming scroll_wheel
+    scroll_wheel:
+        Setting to spectrum
+        Setting brightness to 50
+    wheel:
+        not valid, assuming scroll_wheel
+ 
+In this example the effect 'multicolor' (1st effect) is applied to the 'generic' zone 
+Multicolor was given [99, 4, 155] and [192, 108, 166] for RGB colors, multicolpr defaults to random colors 
+   Refer to the effect manual entry for details 
+Then the 'spectrum' (2ed) effect is applied to the logo and scroll zone as 'logo,scroll' is the 2ed zone 
+Then brightness is set to 50% for the logo and wheel zones 
+Then the 'breath_dual' effect (4th) is applied to the 4th zone logo 
+Breath_dual was given the colors [ 75 234 74 ] and [ 249 153 44 ] as we made use of the colors the mouse already set to use for the logo zone 
+   Refer to the color manual entry for details 
+You will notice that scroll and wheel are not real zones, but typing scroll_wheel is tedious so you can use them as aliases for scroll_wheel 
+   Refer to the zone manual entry for details
+
+
+Print current dpi and poll rate for all devices
+   razer-cli --dpi print --poll print
+   DPI: 1100
+   poll_rate: 1000
+
+
+Turn rgb off on specific device
+   razer-cli -d 'Razer DeathAdder Elite' -e none -b 0
+
+Set both logo and wheel to a random color and set everything to 75% brightness
+razer-cli -e static -c RANDOM -z logo wheel -b 75 -v
+Setting effects for Razer DeathAdder Elite:
+   logo:
+      Setting static to: 120 25 111
+   wheel:
+      not valid, assuming scroll_wheel
+   scroll_wheel:
+      Setting static to: 70 37 232
+Setting brightness of device Razer DeathAdder Elite:
+    Input data: {'generic': '75', 'logo': '75', 'scroll_wheel': '75', 'left': '75', 'right': '75', 'backlight': '75'}
+        Device does not support brightness
+        Setting lighting_logo_brightness to 75
+        Setting lighting_scroll_wheel_brightness to 75
+        Device does not support lighting_left_brightness
+        Device does not support lighting_right_brightness
+        Device does not support lighting_backlight_brightness

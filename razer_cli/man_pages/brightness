@@ -1,0 +1,9 @@
+Brightness arguments can be and of the following:
+    The following words are valid:
+        generic, logo, scroll_wheel, left, right, backlight, and all
+    -b 50 (set everything to 50)
+    -b all 50 (set everything to 50)
+    -b logo 50 (sets logo to 50)
+    -b generic 50 logo 25 (set generic to 50 and logo to 25)
+    -b scroll 50 logo 25 (set scroll to 50 and logo to 25)
+    -b left 25 right 75 logo 0 scroll 50 (set left to 25, right to 75, and scroll to 25)

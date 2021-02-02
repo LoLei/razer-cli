@@ -1,0 +1,12 @@
+Color arguments can be and of the following:
+    Hex Codes (FF00FF)
+    RGB (255 0 255)
+    RNG (RANDOM)
+    You can mix these as you please eg:
+        --color RANDOM 255 0 255 FF00FF
+    If no color is given try the following:
+       1. Colors will be read from the device
+          * Assuming your version openrazer has this feature
+       2. The system X color will be used
+          * Assuming you have one set
+       3. A random color will be made

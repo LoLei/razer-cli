@@ -12,12 +12,42 @@ def hex_to_decimal(hex_color):
     return [r, g, b]
 
 
+def bytes_array_to_hex_array(b):
+    c_str = b.hex()
+    colors = []
+    stop = len(c_str)
+    i = 0
+    while i < stop:
+        colors.append(c_str[i:i+6].upper())
+        i += 6
+    return colors
+
+
 def get_random_color_rgb():
     r = randint(0, 255)
     g = randint(0, 255)
     b = randint(0, 255)
 
     return [r, g, b]
+
+
+def rgb_support(device, zone=False, effect=False):
+    prop = ["lighting"]
+    if not device.capabilities[prop[0]]:
+        # A Razer product without RGB? Does such a thing exist?
+        return False
+    if zone in ['scroll_wheel', 'wheel'] and not prop[0]+'_'+zone in device.capabilities:
+        prop.append('scroll')
+    elif zone and not zone == 'generic':
+        prop.append(zone)
+    if effect == 'advanced' or effect in settings.CUSTOM_EFFECTS:
+        prop.append('led_matrix')
+    elif effect:
+        prop.append(effect)
+    prop = '_'.join(prop)
+    if prop in device.capabilities and device.capabilities[prop]:
+        return True
+    return False
 
 
 def load_settings_from_file(verbose):
@@ -124,3 +154,18 @@ def write_settings_to_file(device, effect="", color="", dpi="", brightness="", p
         with open(path_and_file, mode='w') as file:
             json_data.append(used_settings)
             json.dump(json_data, file, indent=2)
+
+
+def print_manual(man):
+    d_path = os.path.dirname(os.path.realpath(__file__))+'/man_pages'
+    if len(man) == 0:
+        return print("Manual entries exist for:", *sorted(os.listdir(d_path)))
+    for i in man:
+        f_path = d_path+'/'+i
+        if os.path.isfile(f_path):
+            with open(f_path, "r") as f:
+                print("Manual Entry for --{}:".format(i))
+                print(f.read())
+        else:
+            print("No manual entries exist for", i,
+                  "try:\n  ", *sorted(os.listdir(d_path)))

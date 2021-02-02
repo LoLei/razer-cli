@@ -1,0 +1,3 @@
+A list of device names and or serial numbers you want to apply use with the command
+   razer-cli -d 'Razer DeathAdder Elite' -e none
+   razer-cli -d 321848H04401822 -e none

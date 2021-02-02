@@ -1,0 +1,7 @@
+This list info about your razer products.
+
+Use the -v or --verbose flag to also show a devices unsupported capabilities
+
+--list_devices         Shows general info about your hardware
+--list_devices_long    Breaks each long list into seperate lines
+--list_devices_short   Does not print device capabilities

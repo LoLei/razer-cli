@@ -1,0 +1,9 @@
+Read battery info:
+    razer-cli --battery print 
+Set the low battery threshold as a percentage:
+    razer-cli --battery low 10 
+Set idle delay in seconds:
+    razer-cli --battery idle 30 
+You can set both at once:
+    razer-cli --battery low 10 idle 30
+    razer-cli --battery idle 30 low 10
