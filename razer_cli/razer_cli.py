@@ -169,7 +169,7 @@ def list_devices(device_manager):
                     elif args.verbose:
                         print("      brightness: N/A")
                     try:
-			# hasattr will error anyway; no point in testing with it
+                        # hasattr will error anyway; no point in testing with it
                         print("      colors:", util.bytes_array_to_hex_array(
                             device.fx.colors))
                     except:
@@ -466,7 +466,7 @@ def set_effect_to_device(device, effects, color, zones):
             # Prep colors
             used = 0
             if not effect in settings.COLORLESS_EFFECTS:
-		# Custom effects do this in there own block
+                # Custom effects do this in there own block
                 used = 1
                 if effect == 'breath_triple':
                     used = 3
@@ -519,7 +519,7 @@ def set_effect_to_device(device, effects, color, zones):
                 if len(arg) == 0:
                     refresh = razer_constants.RIPPLE_REFRESH_RATE
                 else:
-                    refresh = floar(arg[0])
+                    refresh = float(arg[0])
                 rgb = color[c_used]
                 if getattr(prop, effect)(*rgb, refresh) and args.verbose:
                     debug_msg[zone].append(["Setting", effect, "to:", rgb])
@@ -527,7 +527,7 @@ def set_effect_to_device(device, effects, color, zones):
                 if len(arg) == 0:
                     refresh = razer_constants.RIPPLE_REFRESH_RATE
                 else:
-                    refresh = floar(arg[0])
+                    refresh = float(arg[0])
                 if getattr(prop, effect)(refresh) and args.verbose:
                     debug_msg[zone].append(["Setting to", effect])
             elif effect == 'starlight_single':
