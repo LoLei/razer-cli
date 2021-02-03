@@ -170,8 +170,8 @@ def list_devices(device_manager):
                         print("      brightness: N/A")
                     try:
                         # hasattr will error anyway; no point in testing with it
-                        print("      colors:", util.bytes_array_to_hex_array(
-                            device.fx.colors))
+                        print("      colors:",
+                              util.bytes_array_to_hex_array(device.fx.colors))
                     except:
                         if args.verbose:
                             print("      colors: N/A")
@@ -196,7 +196,7 @@ def list_devices(device_manager):
                         try:
                             val = getattr(attr, p)
                             if isinstance(val, (bytes, bytearray)):
-                               val = util.bytes_array_to_hex_array(val)
+                                val = util.bytes_array_to_hex_array(val)
                             print("      {}: {}".format(p, val))
                         except:
                             if args.verbose:
@@ -815,8 +815,8 @@ def main():
 
     if args.version:
         print("razer-cli:", __version__)
-        print("   Installed in", util.os.path.dirname(
-            util.os.path.realpath(__file__)))
+        print("   Installed in",
+              util.os.path.dirname(util.os.path.realpath(__file__)))
         print("python3-openrazer:", device_manager.version)
         print("openrazer-daemon:", device_manager.daemon_version)
 
