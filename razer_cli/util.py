@@ -159,7 +159,7 @@ def write_settings_to_file(device, effect="", color="", dpi="", brightness="", p
 def print_manual(man):
     d_path = os.path.dirname(os.path.realpath(__file__))+'/man_pages'
     if len(man) == 0:
-        return print("Manual entries exist for:", *sorted(os.listdir(d_path)))
+        return print("Manual entries exist for:", ', '.join(sorted(os.listdir(d_path))))
     for i in man:
         f_path = d_path+'/'+i
         if os.path.isfile(f_path):
@@ -168,4 +168,4 @@ def print_manual(man):
                 print(f.read())
         else:
             print("No manual entries exist for", i,
-                  "try:\n  ", *sorted(os.listdir(d_path)))
+                  "try:\n  ", ', '.join(sorted(os.listdir(d_path))))
