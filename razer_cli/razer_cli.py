@@ -124,7 +124,7 @@ def list_devices(device_manager):
     if args.verbose and args.device:
         print("   Only showing devices matching:", args.device)
 
-    # Iterate over each device and set DPI
+    # Iterate over each device and pretty out some standard information about each
     for device in device_manager.devices:
         # If -d argument is set, only list those devices
         if (args.device and (device.name in args.device or device.serial in args.device)) or (not args.device):
