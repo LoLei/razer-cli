@@ -62,8 +62,8 @@ def parse_color(color):
         stop = len(color)
         i = 0
         while i < stop:
-            if len(color[i]) > 3:
-                if not len(color[i]) == 6:
+            if len(color[i]) > 3 or color[i] in ['x', 'X'] :
+                if not len(color[i]) in [1, 6]:
                     print('color', len(RGB)+1,
                           '(', color[i], ') looks to have a typo')
                 RGB.append(parse_color_argument([color[i]]))
@@ -92,10 +92,12 @@ def parse_color(color):
 def parse_color_argument(color):
 
     if len(color) == 1:
-        # Hex: Just one input argument
-        rgb = color[0]
-        if rgb.lower() == "random":
+        # Hex: Just one input argument or key word
+        rgb = color[0].lower()
+        if rgb == "random":
             rgb = util.get_random_color_rgb()
+        elif rgb == "x":
+            rgb = get_x_color()
         else:
             rgb = util.hex_to_decimal(rgb)
     else:
@@ -268,14 +270,14 @@ def set_dpi(device_manager):
                     print("Setting DPI of device {} to {}".format(device.name,
                                                                   args.dpi))
 
+                # Actually set DPI
+                dpi = args.dpi.split(',')
+                if len(dpi) == 1:
+                    dpi.append(int(dpi[0]))
+                device.dpi = (int(dpi[0]), int(dpi[1]))
+
                 # Save used settings for this device to a file
                 util.write_settings_to_file(device, dpi=args.dpi)
-
-                # Actually set DPI
-                args.dpi = args.dpi.split(',')
-                if len(args.dpi) == 1:
-                    args.dpi.append(int(args.dpi[0]))
-                device.dpi = (int(args.dpi[0]), int(args.dpi[1]))
 
 
 def set_poll_rate(device_manager):
@@ -296,11 +298,11 @@ def set_poll_rate(device_manager):
                                 device.name,
                                 args.poll))
 
-                    # Save used settings for this device to a file
-                    util.write_settings_to_file(device, poll=args.poll)
-
                     # Actually set Polling Rate
                     device.poll_rate = int(args.poll)
+
+                    # Save used settings for this device to a file
+                    util.write_settings_to_file(device, poll=args.poll)
             else:
                 print("Device does not support setting the polling rate")
 
@@ -319,20 +321,25 @@ def set_battery(device_manager):
                 else:
                     i = 0
                     stop = len(args.battery)
+                    bat={}
                     while i < stop:
                         if args.battery[i] == "low" and stop > i+1:
-                            device.set_low_battery_threshold(
-                                int(args.battery[i+1]))
+                            bat['low']=int(args.battery[i+1])
+                            device.set_low_battery_threshold(bat['low'])
                             if args.verbose:
                                 print(device.name, 'low battery =',
                                       device.get_low_battery_threshold(), '%')
                         elif args.battery[i] == "idle" and stop > i+1:
-                            device.set_idle_time(int(args.battery[i+1]))
+                            bat['idle']=int(args.battery[i+1])
+                            device.set_idle_time(bat['idle'])
                             if args.verbose:
                                 print(device.name, 'idle delay =',
                                       device.get_idle_time(), 'seconds')
                         i += 1
-            print('Does', device.name, 'have a battery?')
+                    # Save used settings for this device to a file
+                    util.write_settings_to_file(device, battery=bat)
+            else:
+                print('Does', device.name, 'have a battery?')
 
 
 def set_brightness(device_manager):
@@ -431,8 +438,7 @@ def set_effect_to_device(device, effects, color, zones):
                     if util.rgb_support(device, zone):
                         debug_msg[zone].append(['Does not support', effect])
                     else:
-                        debug_msg[zone].append(
-                            ['Device does not support', zone])
+                        debug_msg[zone].append([zone, 'is not supported'])
                 continue
             if zone == 'generic':
                 prop = device.fx
@@ -497,7 +503,7 @@ def set_effect_to_device(device, effects, color, zones):
                     debug_msg[zone].append(["Setting", effect,
                                             "to:\n         [", *rgb, ']\n         [', *rgb2, ']'])
             elif effect == 'breath_triple':
-                # Effects that use 3 color
+                # Effects that use 3 colors
                 rgb = color[c_used]
                 rgb2 = color[c_used+1]
                 rgb3 = color[c_used+2]
@@ -617,7 +623,7 @@ def set_effect_to_device(device, effects, color, zones):
                             ["Setting", effect, "\n        ", colors_to_dist])
                 except (AssertionError, ValueError) as e:
                     if args.verbose:
-                        debug_msg[zone].append(["Warning: " + str(e)])
+                        debug_msg[zone].append(["Warning:", str(e)])
             else:
                 debug_msg[zone].append(
                     ["Looks like someone forget to program a action for", effect, "after adding it to the settings file"])
@@ -758,9 +764,13 @@ def main():
         color = []
         if args.color:
             color = parse_color(args.color)
+        elif args.automatic:
+            color = [get_x_color()]
         zones = parse_zones(args.zones)
         if not args.effect:
             effects = ['static']
+            if args.automatic and not args.brightness and len(zones) == 1:
+                effects.append('brightness')
         else:
             effects = args.effect
 
