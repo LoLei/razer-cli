@@ -1,7 +1,11 @@
 from razer_cli import settings
 import os
 import json
+import subprocess
 from random import randint
+
+# Global
+X_COLOR = False
 
 
 def hex_to_decimal(hex_color):
@@ -10,6 +14,26 @@ def hex_to_decimal(hex_color):
     b = int(hex_color[4:6], 16)
 
     return [r, g, b]
+
+
+def get_x_color(verbose):
+    # Get current primary color used by pywal, which is color1 in Xresources
+    # Colors could also be read from ~/.cache/wal/colors.json, but this way it
+    # doesn't depend on pywal, in case the X colors are set from a different origin
+    global X_COLOR
+    if X_COLOR:
+        return X_COLOR
+    output = subprocess.check_output(
+        "xrdb -query | grep \"*color1:\" | awk -F '#' '{print $2}'",
+        shell=True).strip()
+
+    if not output:
+        X_COLOR = get_random_color_rgb()
+    else:
+        X_COLOR = hex_to_decimal(output.decode())
+    if verbose:
+        print('Using', X_COLOR, "for X Color")
+    return X_COLOR
 
 
 def bytes_array_to_hex_array(b):
@@ -123,10 +147,10 @@ def load_settings_from_file(verbose):
         print("*** Setting brightness as a effect overrides the brightness option.")
 
     else:
-        print('There is no settings file')
+        print('There is no settings file:', path_and_file)
 
 
-def write_settings_to_file(device, effect=[], color="", dpi="", brightness={}, poll="", zones=[], battery={}):
+def write_settings_to_file(device, effect=[], color=[], dpi="", brightness={}, poll="", zones=[], battery={}):
     """ Save settings to a file for possible later retrieval """
 
     home_dir = os.path.expanduser("~")

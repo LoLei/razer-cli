@@ -8,7 +8,6 @@ __version__ = "1.5.2"
 __license__ = "GPL-3.0"
 
 # Libraries
-import subprocess
 import sys
 from openrazer.client import DeviceManager
 from openrazer.client import constants as razer_constants
@@ -35,21 +34,6 @@ def parse_zones(zones_list):
             zones.append(zones_list[i].split(','))
         i += 1
     return zones
-
-
-def get_x_color():
-    # Get current primary color used by pywal, which is color1 in Xresources
-    # Colors could also be read from ~/.cache/wal/colors.json, but this way it
-    # doesn't depend on pywal, in case the X colors are set from a different origin
-    output = subprocess.check_output(
-        "xrdb -query | grep \"*color1:\" | awk -F '#' '{print $2}'",
-        shell=True).strip()
-
-    if not output:
-        #return [0, 0, 0]
-        return util.get_random_color_rgb()
-
-    return util.hex_to_decimal(output.decode())
 
 
 def parse_color(color):
@@ -84,7 +68,7 @@ def parse_color(color):
         # Use X colors as fallback if no color argument is set
         # TODO: Maybe also add argument to pull colors from
         # ~/.cache/wal.colors.jason
-        RGB.append(get_x_color())
+        RGB.append(util.get_x_color(args.verbose))
 
     return RGB
 
@@ -97,7 +81,7 @@ def parse_color_argument(color):
         if rgb == "random":
             rgb = util.get_random_color_rgb()
         elif rgb == "x":
-            rgb = get_x_color()
+            rgb = util.get_x_color(args.verbose)
         else:
             rgb = util.hex_to_decimal(rgb)
     else:
@@ -413,7 +397,7 @@ def set_effect_to_device(device, effects, color, zones):
         debug_msg = {}
     og_color_len = len(color)
     if og_color_len == 0:
-        default_color = [get_x_color()]
+        default_color = [util.get_x_color(args.verbose)]
     c_used = 0
     i = 0
     stop = len(zones)
@@ -765,7 +749,7 @@ def main():
         if args.color:
             color = parse_color(args.color)
         elif args.automatic:
-            color = [get_x_color()]
+            color = [util.get_x_color(args.verbose)]
         zones = parse_zones(args.zones)
         if not args.effect:
             effects = ['static']
