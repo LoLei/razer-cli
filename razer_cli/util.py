@@ -63,7 +63,10 @@ def load_settings_from_file(verbose):
             data = json.load(file)
         i = len(data)-1
         while i > -1:
-            opts = "-d '"+data[i]['device_name']+"'"
+            if "serial" in data[i]:
+                opts = "-d "+data[i]['serial']
+            else:
+                opts = "-d '"+data[i]['device_name']+"'"
             if data[i].get('color'):
                 opts += " -c"
                 for x in data[i]['color']:
@@ -71,33 +74,59 @@ def load_settings_from_file(verbose):
                     while rgb < 3:
                         opts += " "+str(x[rgb])
                         rgb += 1
+            has_zones = 0
             if data[i].get('zones'):
                 opts += " -z"
                 for x in data[i]['zones']:
                     opts += " "+str(','.join(x))
+                    has_zones += 1
             if data[i].get('dpi'):
                 opts += " --dpi "+str(data[i]['dpi'])
             if data[i].get('poll'):
                 opts += " --poll "+str(data[i]['poll'])
+            b_override = []
             if data[i].get('effect'):
-                opts += " -e "+str(data[i]['effect'])
+                opts += " -e "
+                if isinstance(data[i]['effect'], str):
+                    # Old file
+                    opts += data[i]['effect']
+                else:
+                    opts += ' '.join(data[i]['effect'])
+                    ct = 0
+                    for e in data[i]['effect']:
+                        if e[0:10] == 'brightness':
+                            if has_zones and has_zones >= ct:
+                                for z in data[i]['zones'][ct]:
+                                    b_override.append(z)
+                        ct += 1
+
+            print(b_override)
             if data[i].get('brightness'):
-                opts += " -b"
-                for x in data[i]['brightness']:
-                    opts += " "+x+" "+str(data[i]['brightness'][x])
+                if isinstance(data[i]['brightness'], str):
+                    # Old file
+                    opts += " -b "+data[i]['brightness']
+                else:
+                    opts_b = ""
+                    for x in data[i]['brightness']:
+                        if x not in b_override:
+                            opts_b += " "+x+" "+str(data[i]['brightness'][x])
+                    if opts_b != "":
+                        opts += " -b "+opts_b
             if data[i].get('battery'):
                 opts += " --battery"
                 for x in data[i]['battery']:
                     opts += " "+x+" "+str(data[i]['battery'][x])
 
-            print('   ', 'razer-cli', opts)
+            print('   Settings for {}:'.format(data[i]['device_name']))
+            print('     ', 'razer-cli', opts)
             i -= 1
+        print("*** Setting brightness as a effect overrides the brightness option.")
 
     else:
         print('There is no settings file')
 
 
-def write_settings_to_file(device, effect=[], color="", dpi="", brightness={}, poll="", zones="", battery={}):
+def write_settings_to_file(device, effect=[], color="", dpi="", brightness={}, poll="", zones=[], battery={}):
     """ Save settings to a file for possible later retrieval """
 
     home_dir = os.path.expanduser("~")
@@ -118,26 +147,28 @@ def write_settings_to_file(device, effect=[], color="", dpi="", brightness={}, p
     with open(path_and_file, 'r') as file:
         json_data = json.load(file)
         for item in json_data:
-            if (item['device_name'] == device.name):
+            if ((item.get('serial') and item['serial'] == device.serial) or (not item.get('serial') and item['device_name'] == device.name)):
                 found_existing_settings = True
-                if (color != ""):
+                if not item.get('serial'):
+                    item['serial'] = device.serial
+                if len(color) > 0:
                     item['color'] = color
-                if (zones != ""):
+                if len(zones) > 0:
                     item['zones'] = zones
                 if len(effect) > 0:
-                    item['effect'] = ' '.join(effect)
+                    item['effect'] = effect
                 if (dpi != ""):
                     item['dpi'] = dpi
                 if (poll != ""):
                     item['poll'] = poll
                 if len(brightness) > 0:
-                    if not hasattr(item,'brightness'):
-                        item['brightness']={}
+                    if not hasattr(item, 'brightness'):
+                        item['brightness'] = {}
                     for i in brightness:
                         item['brightness'][i] = brightness[i]
                 if len(battery) > 0:
-                    if not hasattr(item,'battery'):
-                        item['battery']={}
+                    if not hasattr(item, 'battery'):
+                        item['battery'] = {}
                     for i in battery:
                         item['battery'][i] = battery[i]
 
@@ -150,12 +181,13 @@ def write_settings_to_file(device, effect=[], color="", dpi="", brightness={}, p
         print("Adding new settings entry")
         used_settings = {}
         used_settings['device_name'] = device.name
-        if (color != ""):
+        used_settings['serial'] = device.serial
+        if len(color) > 0:
             used_settings['color'] = color
-        if (zones != ""):
+        if len(zones) > 0:
             used_settings['zones'] = zones
         if len(effect) > 0:
-            used_settings['effect'] = ' '.join(effect)
+            used_settings['effect'] = effect
         if (dpi != ""):
             used_settings['dpi'] = dpi
         if (poll != ""):

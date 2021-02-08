@@ -62,7 +62,7 @@ def parse_color(color):
         stop = len(color)
         i = 0
         while i < stop:
-            if len(color[i]) > 3 or color[i] in ['x', 'X'] :
+            if len(color[i]) > 3 or color[i] in ['x', 'X']:
                 if not len(color[i]) in [1, 6]:
                     print('color', len(RGB)+1,
                           '(', color[i], ') looks to have a typo')
@@ -321,16 +321,16 @@ def set_battery(device_manager):
                 else:
                     i = 0
                     stop = len(args.battery)
-                    bat={}
+                    bat = {}
                     while i < stop:
                         if args.battery[i] == "low" and stop > i+1:
-                            bat['low']=int(args.battery[i+1])
+                            bat['low'] = int(args.battery[i+1])
                             device.set_low_battery_threshold(bat['low'])
                             if args.verbose:
                                 print(device.name, 'low battery =',
                                       device.get_low_battery_threshold(), '%')
                         elif args.battery[i] == "idle" and stop > i+1:
-                            bat['idle']=int(args.battery[i+1])
+                            bat['idle'] = int(args.battery[i+1])
                             device.set_idle_time(bat['idle'])
                             if args.verbose:
                                 print(device.name, 'idle delay =',
@@ -825,7 +825,7 @@ def main():
 
     if args.version:
         print("razer-cli:", __version__)
-        print("   Installed in",
+        print("   Installed in:",
               util.os.path.dirname(util.os.path.realpath(__file__)))
         print("python3-openrazer:", device_manager.version)
         print("openrazer-daemon:", device_manager.daemon_version)
