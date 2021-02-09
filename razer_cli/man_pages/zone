@@ -1,0 +1,9 @@
+Zone arguments can be name your device supports 
+Known zone names are generic, logo, scroll_wheel, left, right, backlight, and all. 
+Each zone group gets it own color(s) 
+For example if your zone is '-z logo,scroll_wheel' this will use the same color(s) for both zones 
+however if you use '-z logo scroll_wheel' this will different color(s) for each zones. 
+You can mix these are you see fit for example: '-z logo,scroll_wheel left right' 
+Each zone argument gets it own effect, the default zone is 'generic,logo,scroll_wheel,left,right,backlight' 
+All is treated as 'generic,logo,scroll_wheel,left,right,backlight' 
+If you only specify 1 zone all effects will be applied to that zone

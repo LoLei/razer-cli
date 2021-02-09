@@ -1,0 +1,33 @@
+Effect arguments can any of the following:
+    breath_dual, breath_random, breath_single, breath_triple, none, reactive, ripple, ripple_random, spectrum, starlight_dual, starlight_random, starlight_single, static, wave, and multicolor 
+Each effect is applied to 1 zone, remember that 'logo,right' is 1 zone and 'left right' is 2 zones
+The following effects support a second argument by adding a comma followed by a number:
+    active, brightness, reactive, starlight_single, starlight_dual, starlight_random, wave, and multicolor
+    active,[0-1]
+        0 sets active to False
+        1 sets active to True
+        Defaults to True
+    brightness,[0-100]
+        % brightness (this is the PWM Duty Cycle)
+        If not specified it will be 100
+        This is the same things as --brightness
+        Example usage:
+            razer-cli -e static brightness,75 -z logo logo -c FF0000
+    ripple,[0-∞] & ripple_random,[0-∞]
+        Defaults to 0.05 as defined in openrazer: https://github.com/openrazer/openrazer/blob/master/pylib/openrazer/client/constants.py
+        This is the fresh rate of the effect
+    reactive,[1-4]
+        1 = 500ms, 2 = 1000ms, 3 = 1500ms, and 4 = 2000ms
+        If not specified it will be chosen at random
+    starlight_single,[1-3], starlight_dual,[1-3], and starlight_random,[1-3]
+        1 = fast, 2 = normal, and 3 = slow
+        If not specified it will be chosen at random
+    wave,[1-2]
+        1 = right and 2 = left
+        If not specified it will be chosen at random
+    multicolor,[0-∞]
+        0 = assign random colors for everything (does not consume colors)
+        1-∞ = the number of colors to use from -c
+        This defaults to 0
+    The following effects do NOT consume colors:
+        none, active, brightness, breath_random, spectrum, starlight_random, and wave If you only specify 1 effect it will be applied all zone

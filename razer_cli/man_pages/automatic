@@ -1,0 +1,7 @@
+razer-cli -a
+Has the same behavior as
+razer-cli -c x -e static brightness -z all
+
+Set a static effect on all zones using the system's xcolor
+If no Xcolor is found it will be a single random color
+Set the brightness to the default value (100%)

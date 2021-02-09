@@ -1,0 +1,4 @@
+DPI lets you assign the dpi a device (like a mouse) 
+This needs to be a number or 2 numbers separated by a command (800,1000) 
+When using 2 numbers you are setting the X/Y DPI separately in that order
+You can also use 'print' to see the dpi setting

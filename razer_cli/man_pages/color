@@ -1,0 +1,15 @@
+Color arguments can be and of the following (not case sensitive):
+    Hex Codes (eg: FF00FF)
+    RGB (eg: 255 0 255)
+    RNG (eg: RANDOM)
+    X   (eg: x)
+    X will use the Xcolor setting on from your desktop environment,
+       it will use a random color if none is found
+    You can mix these as you please eg:
+        --color RANDOM 255 0 255 FF00FF
+    If no color is given try the following:
+       1. Colors will be read from the device
+          * Assuming your version openrazer has this feature
+       2. The system X color will be used
+          * Assuming you have one set
+       3. A random color will be made

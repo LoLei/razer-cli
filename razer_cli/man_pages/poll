@@ -1,0 +1,3 @@
+Poll lets you assign the polling rate of a device (like a mouse) 
+This can be set to 125, 500, or 1000; 500 is default 
+You can also use 'print' to see the poll rate

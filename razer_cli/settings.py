@@ -1,26 +1,37 @@
 CACHE_DIR = ".cache/razer-cli"
 CACHE_FILE = "razer-cli-settings.json"
 
-# Effect names known to exist in the driver
-EFFECTS = [
-    'none',
-    'brightness',
+# Effects that do not use RGB input
+COLOR_EFFECTS = [
     'breath_single',
     'breath_dual',
     'breath_triple',
-    'breath_random',
     'blinking',
     'reactive',
     'ripple',
-    'ripple_random',
     'pulsate',
-    'spectrum',
     'starlight_single',
     'starlight_dual',
-    'starlight_random',
-    'static',
-    'wave'
+    'static'
 ]
+
+# Effects that have RGB input
+COLORLESS_EFFECTS = [
+    'active',
+    'none',
+    'brightness',
+    'breath_random',
+    'ripple_random',
+    'starlight_random',
+    'spectrum',
+    'wave',
+]
+
+# Effect names known to exist in the driver (COLOR_EFFECTS + COLORLESS_EFFECTS)
+EFFECTS = sorted([
+    *COLOR_EFFECTS,
+    *COLORLESS_EFFECTS
+])
 
 # These effects are not built-in the driver
 CUSTOM_EFFECTS = [
@@ -31,6 +42,10 @@ CUSTOM_EFFECTS = [
     'multicolor'
 ]
 
+ALL_EFFECTS = [
+    *EFFECTS,
+    *CUSTOM_EFFECTS,
+]
 # These are the known lighting zones built into the driver, generic is a custom
 # name for the entire device and not a specific zone
 ZONES = [
