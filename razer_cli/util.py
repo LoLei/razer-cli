@@ -1,8 +1,9 @@
-from razer_cli import settings
-import os
 import json
+import os
 import subprocess
 from random import randint
+
+from razer_cli import settings
 
 # Global
 X_COLOR = False
@@ -42,7 +43,7 @@ def bytes_array_to_hex_array(b):
     stop = len(c_str)
     i = 0
     while i < stop:
-        colors.append(c_str[i:i+6].upper())
+        colors.append(c_str[i:i + 6].upper())
         i += 6
     return colors
 
@@ -60,7 +61,7 @@ def rgb_support(device, zone=False, effect=False):
     if not device.capabilities[prop[0]]:
         # A Razer product without RGB? Does such a thing exist?
         return False
-    if zone in ['scroll_wheel', 'wheel'] and not prop[0]+'_'+zone in device.capabilities:
+    if zone in ['scroll_wheel', 'wheel'] and not prop[0] + '_' + zone in device.capabilities:
         prop.append('scroll')
     elif zone and not zone == 'generic':
         prop.append(zone)
@@ -85,29 +86,29 @@ def load_settings_from_file(verbose):
         print("Feature incomplete, here are the command(s) to restore the settings:")
         with open(path_and_file, 'r') as file:
             data = json.load(file)
-        i = len(data)-1
+        i = len(data) - 1
         while i > -1:
             if "serial" in data[i]:
-                opts = "-d "+data[i]['serial']
+                opts = "-d " + data[i]['serial']
             else:
-                opts = "-d '"+data[i]['device_name']+"'"
+                opts = "-d '" + data[i]['device_name'] + "'"
             if data[i].get('color'):
                 opts += " -c"
                 for x in data[i]['color']:
                     rgb = 0
                     while rgb < 3:
-                        opts += " "+str(x[rgb])
+                        opts += " " + str(x[rgb])
                         rgb += 1
             has_zones = 0
             if data[i].get('zones'):
                 opts += " -z"
                 for x in data[i]['zones']:
-                    opts += " "+str(','.join(x))
+                    opts += " " + str(','.join(x))
                     has_zones += 1
             if data[i].get('dpi'):
-                opts += " --dpi "+str(data[i]['dpi'])
+                opts += " --dpi " + str(data[i]['dpi'])
             if data[i].get('poll'):
-                opts += " --poll "+str(data[i]['poll'])
+                opts += " --poll " + str(data[i]['poll'])
             b_override = []
             if data[i].get('effect'):
                 opts += " -e "
@@ -126,18 +127,18 @@ def load_settings_from_file(verbose):
             if data[i].get('brightness'):
                 if isinstance(data[i]['brightness'], str):
                     # Old file
-                    opts += " -b "+data[i]['brightness']
+                    opts += " -b " + data[i]['brightness']
                 else:
                     opts_b = ""
                     for x in data[i]['brightness']:
                         if x not in b_override:
-                            opts_b += " "+x+" "+str(data[i]['brightness'][x])
+                            opts_b += " " + x + " " + str(data[i]['brightness'][x])
                     if opts_b != "":
-                        opts += " -b "+opts_b
+                        opts += " -b " + opts_b
             if data[i].get('battery'):
                 opts += " --battery"
                 for x in data[i]['battery']:
-                    opts += " "+x+" "+str(data[i]['battery'][x])
+                    opts += " " + x + " " + str(data[i]['battery'][x])
 
             print('   Settings for {}:'.format(data[i]['device_name']))
             print('     ', 'razer-cli', opts)
@@ -169,7 +170,8 @@ def write_settings_to_file(device, effect=[], color=[], dpi="", brightness={}, p
     with open(path_and_file, 'r') as file:
         json_data = json.load(file)
         for item in json_data:
-            if ((item.get('serial') and item['serial'] == device.serial) or (not item.get('serial') and item['device_name'] == device.name)):
+            if ((item.get('serial') and item['serial'] == device.serial) or (
+                    not item.get('serial') and item['device_name'] == device.name)):
                 found_existing_settings = True
                 if not item.get('serial'):
                     item['serial'] = device.serial
@@ -224,11 +226,11 @@ def write_settings_to_file(device, effect=[], color=[], dpi="", brightness={}, p
 
 
 def print_manual(man):
-    d_path = os.path.dirname(os.path.realpath(__file__))+'/man_pages'
+    d_path = os.path.dirname(os.path.realpath(__file__)) + '/man_pages'
     if len(man) == 0:
         return print("Manual entries exist for:", ', '.join(sorted(os.listdir(d_path))))
     for i in man:
-        f_path = d_path+'/'+i
+        f_path = d_path + '/' + i
         if os.path.isfile(f_path):
             with open(f_path, "r") as f:
                 print("Manual Entry for --{}:".format(i))
