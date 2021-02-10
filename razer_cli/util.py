@@ -123,8 +123,6 @@ def load_settings_from_file(verbose):
                                 for z in data[i]['zones'][ct]:
                                     b_override.append(z)
                         ct += 1
-
-            print(b_override)
             if data[i].get('brightness'):
                 if isinstance(data[i]['brightness'], str):
                     # Old file
