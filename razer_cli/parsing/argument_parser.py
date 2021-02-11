@@ -1,8 +1,10 @@
 import argparse
 import sys
+from typing import List
 
 
-def read_args():
+def read_args(input_args: List[str]) -> argparse.Namespace:
+
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-man", "--manual", nargs="*",
@@ -79,10 +81,8 @@ def read_args():
                         help="Print version number",
                         action="store_true")
 
-    args = parser.parse_args()
-
-    if len(sys.argv) <= 1:
+    if len(input_args) < 1:
         parser.print_help()
         sys.exit(1)
 
-    return args
+    return parser.parse_args(input_args)

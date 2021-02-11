@@ -88,7 +88,7 @@ def handle_version(device_manager):
 def main():
     """ Main entry point of the app """
     global args
-    args = read_args()
+    args = read_args(sys.argv[1:])
 
     if args.manual is not None:
         return util.print_manual(args.manual)
