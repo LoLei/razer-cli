@@ -3,7 +3,7 @@ import os
 import subprocess
 from random import randint
 
-from razer_cli import settings
+from razer_cli.razer_cli import settings
 
 # Global
 X_COLOR = False

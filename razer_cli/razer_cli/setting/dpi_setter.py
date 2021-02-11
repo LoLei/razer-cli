@@ -1,6 +1,6 @@
 from argparse import Namespace
 
-from razer_cli import util
+from razer_cli.razer_cli import util
 
 
 def set_dpi(device_manager, args: Namespace):

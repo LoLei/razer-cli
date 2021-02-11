@@ -1,6 +1,6 @@
 from argparse import Namespace
 
-from razer_cli import settings, util
+from razer_cli.razer_cli import settings, util
 
 
 def list_devices(device_manager, args: Namespace):

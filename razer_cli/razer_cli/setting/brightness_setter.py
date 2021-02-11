@@ -1,6 +1,6 @@
 from argparse import Namespace
 
-from razer_cli import settings, util
+from razer_cli.razer_cli import settings, util
 
 
 def set_brightness(device_manager, args: Namespace):

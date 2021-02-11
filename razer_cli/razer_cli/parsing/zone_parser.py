@@ -1,4 +1,4 @@
-from razer_cli import settings
+from razer_cli.razer_cli import settings
 
 
 def parse_zones(zones_list):

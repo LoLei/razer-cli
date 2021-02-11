@@ -7,8 +7,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import MagicMock
 
-from razer_cli import settings
-from razer_cli import util
+from razer_cli.razer_cli import settings, util
 
 
 class TestUtil(unittest.TestCase):

@@ -12,16 +12,16 @@ import sys
 
 from openrazer.client import DeviceManager
 
-from razer_cli import util
-from razer_cli.listing.lister import list_devices
-from razer_cli.parsing.argument_parser import read_args
-from razer_cli.parsing.color_parser import parse_color
-from razer_cli.parsing.zone_parser import parse_zones
-from razer_cli.setting.battery_setter import set_battery
-from razer_cli.setting.brightness_setter import set_brightness
-from razer_cli.setting.dpi_setter import set_dpi
-from razer_cli.setting.effect_setter import set_effect_to_all_devices
-from razer_cli.setting.poll_rate_setter import set_poll_rate
+from razer_cli.razer_cli import util
+from razer_cli.razer_cli.listing.lister import list_devices
+from razer_cli.razer_cli.parsing.argument_parser import read_args
+from razer_cli.razer_cli.parsing.color_parser import parse_color
+from razer_cli.razer_cli.parsing.zone_parser import parse_zones
+from razer_cli.razer_cli.setting.battery_setter import set_battery
+from razer_cli.razer_cli.setting.brightness_setter import set_brightness
+from razer_cli.razer_cli.setting.dpi_setter import set_dpi
+from razer_cli.razer_cli.setting.effect_setter import set_effect_to_all_devices
+from razer_cli.razer_cli.setting.poll_rate_setter import set_poll_rate
 
 args: argparse.Namespace
 

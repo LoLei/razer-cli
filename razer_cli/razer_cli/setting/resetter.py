@@ -1,4 +1,4 @@
-from razer_cli import settings
+from razer_cli.razer_cli import settings
 
 
 def reset_device_effect(device):

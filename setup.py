@@ -1,9 +1,9 @@
 """razer-cli - setup.py"""
-import setuptools
+from setuptools import setup, find_packages
 
 LONG_DESC = open('README.md').read()
 
-setuptools.setup(
+setup(
     name="razer-cli",
     version="1.5.2",
     author="Lorenz Leitner",
@@ -17,7 +17,7 @@ setuptools.setup(
         "Operating System :: POSIX :: Linux",
         "Programming Language :: Python :: 3.7",
     ],
-    packages=["razer_cli"],
-    entry_points={"console_scripts": ["razer-cli=razer_cli.razer_cli:main"]},
-    python_requires=">=3"
+    packages=find_packages(),
+    entry_points={"console_scripts": ["razer-cli=razer_cli.razer_cli.razer_cli:main"]},
+    python_requires=">=3.7"
     )
