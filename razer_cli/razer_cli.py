@@ -8,6 +8,7 @@ __version__ = "1.5.2"
 __license__ = "GPL-3.0"
 
 import argparse
+import sys
 
 from openrazer.client import DeviceManager
 
@@ -81,6 +82,7 @@ def handle_version(device_manager):
           util.os.path.dirname(util.os.path.realpath(__file__)))
     print("python3-openrazer:", device_manager.version)
     print("openrazer-daemon:", device_manager.daemon_version)
+    print("Python:", '.'.join([str(sys.version_info.major), str(sys.version_info.minor), str(sys.version_info.micro)]))
 
 
 def main():
