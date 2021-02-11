@@ -9,3 +9,9 @@ class TestArgumentParser(unittest.TestCase):
         args: Namespace
         args = read_args(["-ls"])
         self.assertTrue(args.list_devices_short)
+
+    def test_function_namespace_annotation(self):
+        # Just make sure it doesn't crash
+        def function_with_namespace_args(args: Namespace) -> Namespace:
+            return Namespace()
+        function_with_namespace_args(Namespace())
