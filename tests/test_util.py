@@ -17,12 +17,15 @@ class TestUtil(unittest.TestCase):
     def test_write_settings_to_file(self):
         """> Test if cache file writing works"""
 
-        # Backup original file if this is running locally
+        # Build file path
         home_dir = os.path.expanduser("~")
         dir_name = settings.CACHE_DIR
         file_name = settings.CACHE_FILE
         path_and_file = os.path.join(home_dir, dir_name, file_name)
-        shutil.copyfile(path_and_file, path_and_file + "_backup")
+
+        # Backup original file if this is running locally
+        if Path(path_and_file).exists():
+            shutil.copyfile(path_and_file, path_and_file + "_backup")
 
         # Save random device settings to cache
         device = MagicMock()
@@ -41,8 +44,9 @@ class TestUtil(unittest.TestCase):
         )
 
         # Restore original file
-        shutil.copyfile(path_and_file + "_backup", path_and_file)
-        Path(path_and_file + "_backup").unlink()
+        if Path(path_and_file + "_backup").exists():
+            shutil.copyfile(path_and_file + "_backup", path_and_file)
+            Path(path_and_file + "_backup").unlink()
 
     def test_hex_to_decimal(self):
         """> Test if hex converting works"""
