@@ -15,8 +15,6 @@ def set_effect_to_device(device, effects, color, zones, args: Namespace):
     if args.verbose:
         debug_msg = {}
     og_color_len = len(color)
-    if og_color_len == 0:
-        default_color = [util.get_x_color(args.verbose)]
     c_used = 0
     i = 0
     stop = len(zones)
@@ -64,7 +62,7 @@ def set_effect_to_device(device, effects, color, zones, args: Namespace):
                     color = parse_color(
                         util.bytes_array_to_hex_array(getattr(prop, 'colors')), args)
                 except:
-                    color = default_color
+                    color = [util.get_x_color(args.verbose)]
                 c_used = 0
                 if args.verbose:
                     debug_msg[zone].append(["No color given, using:", color])
