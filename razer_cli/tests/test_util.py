@@ -1,5 +1,5 @@
 """Test util functions"""
-
+import json
 import os.path
 import shutil
 import unittest
@@ -31,16 +31,17 @@ class TestUtil(unittest.TestCase):
         device.name = "test_device"
         device.serial = "test_serial"
         util.write_settings_to_file(device, dpi="1234")
+        util.write_settings_to_file(device, effect=["multicolor"])
 
         # Check if file has been written
         self.assertTrue(os.path.isfile(path_and_file))
-        self.assertTrue(
-            x in Path(path_and_file).read_text() for x in [
-                '"device_name": "test_device"',
-                '"serial": "test_serial"',
-                ' "dpi": "1234"',
-            ]
-        )
+
+        # Check contents
+        data = json.loads(Path(path_and_file).read_text())[0]
+        self.assertEqual(data["device_name"], "test_device")
+        self.assertEqual(data["serial"], "test_serial")
+        self.assertEqual(data["dpi"], "1234")
+        self.assertEqual(data["effect"], ["multicolor"])
 
         # Restore original file
         if Path(path_and_file + "_backup").exists():
