@@ -18,34 +18,51 @@ information.
 
 ## Usage
 ```
-$ razer-cli -h                                                             <<<
-usage: razer-cli [-h] [-e EFFECT [EFFECT ...]] [-v] [-c COLOR [COLOR ...]]
-                 [-l] [-ll] [-llh] [-a] [-d DEVICE [DEVICE ...]] [--dpi DPI]
-                 [--poll POLL] [-b BRIGHTNESS] [--sync]
+$ razer-cli -h
+usage: razer-cli [-h] [-man [MANUAL ...]] [-v] [-d DEVICE [DEVICE ...]]
+                 [-a] [-e EFFECT [EFFECT ...]] [-c COLOR [COLOR ...]]
+                 [-z ZONES [ZONES ...]] [-b BRIGHTNESS [BRIGHTNESS ...]]
+                 [--dpi DPI] [--poll POLL]
+                 [--battery BATTERY [BATTERY ...]] [-l] [-ll] [-ls]
+                 [--sync] [--restore] [--version]
 
 optional arguments:
   -h, --help            show this help message and exit
+  -man [MANUAL ...], --manual [MANUAL ...]
+                        Print help details for given feature(s)
+  -v, --verbose         increase output verbosity
+  -d DEVICE [DEVICE ...], --device DEVICE [DEVICE ...]
+                        only affect these devices, same name as output of
+                        -l
+  -a, --automatic       try to find colors and set them to all devices
+                        without user arguments, uses X or pywal colors
   -e EFFECT [EFFECT ...], --effect EFFECT [EFFECT ...]
                         set effect
-  -v, --verbose         increase output verbosity
   -c COLOR [COLOR ...], --color COLOR [COLOR ...]
                         choose color (default: X color1), use one argument
                         for hex, or three for base10 rgb
-  -l, --list_devices    list available devices and their supported effects
-  -ll, --list_devices_long
-                        list available devices and all their capabilities
-  -llh, --list_devices_long_human
-                        list devices and capabilities human readable
-  -a, --automatic       try to find colors and set them to all devices
-                        without user arguments, uses X or pywal colors
-  -d DEVICE [DEVICE ...], --device DEVICE [DEVICE ...]
-                        only affect these devices, same name as output of -l
-  --dpi DPI             set DPI of device (use print as a value to show it)
-  --poll POLL           set polling rate of device (use print as a value to
-                        show it)
-  -b BRIGHTNESS, --brightness BRIGHTNESS
+  -z ZONES [ZONES ...], --zone ZONES [ZONES ...]
+                        choose zone for color(s)
+  -b BRIGHTNESS [BRIGHTNESS ...], --brightness BRIGHTNESS [BRIGHTNESS ...]
                         set brightness of device
-  --sync                sync lighting effects to all supported Razer products
+  --dpi DPI             set DPI of device (use print as a value to show
+                        it)
+  --poll POLL           set polling rate of device (use print as a value
+                        to show it)
+  --battery BATTERY [BATTERY ...]
+                        set low threshold and/or idle delay (use print as
+                        a value to show it)
+  -l, --list_devices    list available devices, settings, and their
+                        supported capabilities/effects
+  -ll, --list_devices_long
+                        list available devices settings, and list their
+                        supported capabilities/effects
+  -ls, --list_devices_short
+                        list available devices and their settings
+  --sync                sync lighting effects to all supported Razer
+                        products
+  --restore             Load last used settings
+  --version             Print version number
 ```
 <sup>This might be out of date, just run it with `-h` yourself to see the newest
 options.</sup>  
