@@ -16,7 +16,7 @@ from razer_cli.razer_cli.parser.argument_parser import read_args
 from razer_cli.razer_cli.rc import RazerCli
 
 
-def main():
+def main() -> None:
     """ Main entry point of the app """
     args = read_args(sys.argv[1:])
 
@@ -26,7 +26,7 @@ def main():
     # Create a DeviceManager. This is used to get specific devices
     device_manager = DeviceManager()
 
-    rc = RazerCli(device_manager, args, __version__)
+    rc = RazerCli.init_create(device_manager, args, __version__)
     rc.run()
 
 
