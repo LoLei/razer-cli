@@ -1,5 +1,3 @@
-from argparse import Namespace
-
 from openrazer.client import constants as razer_constants
 
 from razer_cli.razer_cli import settings, util
@@ -7,7 +5,7 @@ from razer_cli.razer_cli.parser.color_parser import parse_color
 from razer_cli.razer_cli.setter.setter import Setter
 
 
-class EffectSetter(Setter):
+class ColorEffectSetter(Setter):
 
     def set(self, **kwargs):
         # def set_effect_to_all_devices(device_manager, input_effects, color, zones, self.args: Namespace):
@@ -16,7 +14,8 @@ class EffectSetter(Setter):
         # Iterate over each device and set the effect
         for device in self.device_manager.devices:
             # If -d argument is set, only set those devices
-            if (self.args.device and (device.name in self.args.device or device.serial in self.args.device)) or (not self.args.device):
+            if (self.args.device and (device.name in self.args.device or device.serial in self.args.device)) or \
+                    (not self.args.device):
                 if self.args.verbose:
                     print('Setting effects for {}:'.format(device.name))
                 self.set_effect_to_device(device, **kwargs)
@@ -82,9 +81,10 @@ class EffectSetter(Setter):
                     if self.args.verbose:
                         debug_msg[zone].append(["No color given, using:", color])
                 if effect not in settings.ALL_EFFECTS:
-                    debug_msg[zone].append(["Sorry", effect, "is supported by the hardware, but this software does not\n",
-                                            "         Consider makeing a bug report:\n",
-                                            "            https://github.com/LoLei/razer-cli/issues"])
+                    debug_msg[zone].append(
+                        ["Sorry", effect, "is supported by the hardware, but this software does not\n",
+                         "         Consider makeing a bug report:\n",
+                         "            https://github.com/LoLei/razer-cli/issues"])
                     continue
                 # Prep colors
                 used = 0

@@ -9,8 +9,8 @@ from razer_cli.razer_cli.handler.version_handler import VersionHandler
 from razer_cli.razer_cli.lister.device_lister import DeviceLister
 from razer_cli.razer_cli.setter.battery_setter import BatterySetter
 from razer_cli.razer_cli.setter.brightness_setter import BrightnessSetter
+from razer_cli.razer_cli.setter.color_effect_setter import ColorEffectSetter
 from razer_cli.razer_cli.setter.dpi_setter import DpiSetter
-from razer_cli.razer_cli.setter.effect_setter import EffectSetter
 from razer_cli.razer_cli.setter.poll_rate_setter import PollRateSetter
 
 
@@ -19,7 +19,8 @@ class RazerCli:
         self.device_manager = device_manager
         self.args = args
         self.version = version
-        self.color_effect_handler = ColorEffectHandler(device_manager, args, setter=EffectSetter(device_manager, args))
+        self.color_effect_handler = ColorEffectHandler(device_manager, args,
+                                                       setter=ColorEffectSetter(device_manager, args))
         self.brightness_handler = BrightnessHandler(device_manager, args, setter=BrightnessSetter(device_manager, args))
         self.version_handler = VersionHandler(device_manager, args, version=version)
         self.device_lister = DeviceLister(device_manager, args)
