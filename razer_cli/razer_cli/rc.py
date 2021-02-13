@@ -7,9 +7,9 @@ from razer_cli.razer_cli.handler.brightness_handler import BrightnessHandler
 from razer_cli.razer_cli.handler.color_effect_handler import ColorEffectHandler
 from razer_cli.razer_cli.handler.version_handler import VersionHandler
 from razer_cli.razer_cli.lister.device_lister import DeviceLister
-from razer_cli.razer_cli.setter.battery_setter import set_battery
-from razer_cli.razer_cli.setter.dpi_setter import set_dpi
-from razer_cli.razer_cli.setter.poll_rate_setter import set_poll_rate
+from razer_cli.razer_cli.setter.battery_setter import BatterySetter
+from razer_cli.razer_cli.setter.dpi_setter import DpiSetter
+from razer_cli.razer_cli.setter.poll_rate_setter import PollRateSetter
 
 
 class RazerCli:
@@ -21,6 +21,9 @@ class RazerCli:
         self.brightness_handler = BrightnessHandler(device_manager, args)
         self.version_handler = VersionHandler(device_manager, args, version)
         self.device_lister = DeviceLister(device_manager, args)
+        self.dpi_setter = DpiSetter(device_manager, args)
+        self.poll_rater_setter = PollRateSetter(device_manager, args)
+        self.battery_setter = BatterySetter(device_manager, args)
 
     def run(self):
         self.device_manager.sync_effects = self.args.sync
@@ -32,13 +35,13 @@ class RazerCli:
             util.load_settings_from_file(self.args.verbose)
 
         if self.args.dpi:
-            set_dpi(self.device_manager, self.args)
+            self.dpi_setter.set()
 
         if self.args.poll:
-            set_poll_rate(self.device_manager, self.args)
+            self.poll_rater_setter.set()
 
         if self.args.battery:
-            set_battery(self.device_manager, self.args)
+            self.battery_setter.set()
 
         if self.args.brightness:
             self.brightness_handler.handle()
