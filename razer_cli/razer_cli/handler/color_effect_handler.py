@@ -1,5 +1,5 @@
 from razer_cli.razer_cli import util
-from razer_cli.razer_cli.handler.Handler import Handler
+from razer_cli.razer_cli.handler.handler import Handler
 from razer_cli.razer_cli.parser.color_parser import parse_color
 from razer_cli.razer_cli.parser.zone_parser import parse_zones
 from razer_cli.razer_cli.setter.effect_setter import set_effect_to_all_devices

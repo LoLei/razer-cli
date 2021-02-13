@@ -2,7 +2,7 @@ import sys
 
 import razer_cli
 from razer_cli.razer_cli import util
-from razer_cli.razer_cli.handler.Handler import Handler
+from razer_cli.razer_cli.handler.handler import Handler
 
 
 class VersionHandler(Handler):

@@ -6,7 +6,7 @@ from razer_cli.razer_cli import util
 from razer_cli.razer_cli.handler.brightness_handler import BrightnessHandler
 from razer_cli.razer_cli.handler.color_effect_handler import ColorEffectHandler
 from razer_cli.razer_cli.handler.version_handler import VersionHandler
-from razer_cli.razer_cli.lister.lister import list_devices
+from razer_cli.razer_cli.lister.device_lister import DeviceLister
 from razer_cli.razer_cli.setter.battery_setter import set_battery
 from razer_cli.razer_cli.setter.dpi_setter import set_dpi
 from razer_cli.razer_cli.setter.poll_rate_setter import set_poll_rate
@@ -20,6 +20,7 @@ class RazerCli:
         self.color_effect_handler = ColorEffectHandler(device_manager, args)
         self.brightness_handler = BrightnessHandler(device_manager, args)
         self.version_handler = VersionHandler(device_manager, args, version)
+        self.device_lister = DeviceLister(device_manager, args)
 
     def run(self):
         self.device_manager.sync_effects = self.args.sync
@@ -43,7 +44,7 @@ class RazerCli:
             self.brightness_handler.handle()
 
         if self.args.list_devices or self.args.list_devices_long or self.args.list_devices_short:
-            list_devices(self.device_manager, self.args)
+            self.device_lister.list()
 
         if self.args.version:
             self.version_handler.handle()

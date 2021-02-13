@@ -1,4 +1,4 @@
-from razer_cli.razer_cli.handler.Handler import Handler
+from razer_cli.razer_cli.handler.handler import Handler
 from razer_cli.razer_cli.setter.brightness_setter import set_brightness
 
 
