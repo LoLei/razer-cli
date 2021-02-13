@@ -1,7 +1,7 @@
 import unittest
 from argparse import Namespace
 
-from razer_cli.razer_cli.parsing.argument_parser import read_args
+from razer_cli.razer_cli.parser.argument_parser import read_args
 
 
 class TestArgumentParser(unittest.TestCase):

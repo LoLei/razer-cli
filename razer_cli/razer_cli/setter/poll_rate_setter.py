@@ -27,4 +27,4 @@ def set_poll_rate(device_manager, args: Namespace):
                     # Save used settings for this device to a file
                     util.write_settings_to_file(device, poll=args.poll)
             else:
-                print("Device does not support setting the polling rate")
+                print("Device does not support setter the polling rate")

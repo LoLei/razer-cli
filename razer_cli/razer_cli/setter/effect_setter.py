@@ -3,7 +3,7 @@ from argparse import Namespace
 from openrazer.client import constants as razer_constants
 
 from razer_cli.razer_cli import settings, util
-from razer_cli.razer_cli.parsing.color_parser import parse_color
+from razer_cli.razer_cli.parser.color_parser import parse_color
 
 
 def set_effect_to_device(device, effects, color, zones, args: Namespace):

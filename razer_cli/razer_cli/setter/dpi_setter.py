@@ -10,7 +10,7 @@ def set_dpi(device_manager, args: Namespace):
         if (args.device and (device.name in args.device or device.serial in args.device)) or (not args.device):
             if (not device.has('dpi')):
                 if args.verbose:
-                    print("Device {} is not have a DPI setting".format(device.name))
+                    print("Device {} is not have a DPI setter".format(device.name))
             elif args.dpi == "print":
                 dpi = device.dpi
                 if args.poll == "print":
