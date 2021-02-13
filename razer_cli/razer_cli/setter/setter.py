@@ -11,5 +11,5 @@ class Setter(ABC):
         self.args = args
 
     @abstractmethod
-    def set(self):
+    def set(self, **kwargs):
         ...

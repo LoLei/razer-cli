@@ -1,5 +1,4 @@
 from razer_cli.razer_cli.handler.handler import Handler
-from razer_cli.razer_cli.setter.brightness_setter import set_brightness
 
 
 class BrightnessHandler(Handler):
@@ -7,7 +6,8 @@ class BrightnessHandler(Handler):
         i = len(self.args.brightness)
         if i == 1 and self.args.brightness[0].isnumeric():
             self.args.brightness = {"all": self.args.brightness[0]}
-            set_brightness(self.device_manager, self.args)
+            self.setter.args = self.args
+            self.setter.set()
         elif i % 2 == 0:
             # Even number of arguments
             brightness = {}
@@ -22,6 +22,7 @@ class BrightnessHandler(Handler):
                           name, '[Skipping]')
                 i = i - 2
             self.args.brightness = brightness
-            set_brightness(self.device_manager, self.args)
+            self.setter.args = self.args
+            self.setter.set()
         else:
             print("Invalid brightness input, see `razer-cli --manual brightness'")
