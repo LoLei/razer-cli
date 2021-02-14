@@ -18,7 +18,7 @@ setup(
         "Programming Language :: Python :: 3.7",
     ],
     packages=find_packages(),
-    entry_points={"console_scripts": ["razer-cli=razer_cli.razer_cli.razer_cli:main"]},
+    entry_points={"console_scripts": ["razer-cli=razer_cli.razer_cli.main:main"]},
     python_requires=">=3.7",
     package_data={'': ['razer_cli/razer_cli/man_pages']},
     include_package_data=True,
