@@ -1,4 +1,3 @@
-from __future__ import annotations
 from argparse import Namespace
 
 from openrazer.client import DeviceManager
@@ -35,7 +34,7 @@ class RazerCli:
         self.battery_setter = battery_setter
 
     @staticmethod
-    def init_create(device_manager: DeviceManager, args: Namespace, version: str) -> RazerCli:
+    def init_create(device_manager: DeviceManager, args: Namespace, version: str) -> 'RazerCli':
         """ Factory method to have dependency injection available on the constructor """
         color_effect_handler = ColorEffectHandler(device_manager, args, setter=ColorEffectSetter(device_manager, args))
         brightness_handler = BrightnessHandler(device_manager, args, setter=BrightnessSetter(device_manager, args))
