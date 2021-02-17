@@ -5,7 +5,7 @@ LONG_DESC = open('README.md').read()
 
 setup(
     name="razer-cli",
-    version="2.0.0",
+    version="2.0.1",
     author="Lorenz Leitner",
     author_email="lrnz.ltnr@gmail.com",
     description="Control Razer devices from the command line",
@@ -15,7 +15,7 @@ setup(
     classifiers=[
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: POSIX :: Linux",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.6",
     ],
     packages=find_packages(),
     entry_points={"console_scripts": ["razer-cli=razer_cli.razer_cli.main:main"]},
