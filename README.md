@@ -23,6 +23,13 @@ git clone https://github.com/LoLei/razer-cli.git
 cd razer-cli
 sudo python setup.py install
 ```
+OR
+
+```
+git clone https://github.com/LoLei/razer-cli.git
+cd razer-cli
+pip install . --user
+```
 
 ## Usage
 ```
