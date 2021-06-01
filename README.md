@@ -16,6 +16,21 @@ information.
 ## Installation
 [`pip install razer-cli`](https://pypi.org/project/razer-cli/)
 
+OR
+
+```
+git clone https://github.com/LoLei/razer-cli.git
+cd razer-cli
+sudo python setup.py install
+```
+OR
+
+```
+git clone https://github.com/LoLei/razer-cli.git
+cd razer-cli
+pip install . --user
+```
+
 ## Usage
 ```
 $ razer-cli -h
