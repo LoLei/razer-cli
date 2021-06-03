@@ -49,28 +49,28 @@ class RazerCli:
                         dpi_setter, poll_rater_setter, battery_setter)
 
     def run(self) -> None:
-        self.device_manager.sync_effects = self.args.sync
+        # self.device_manager.sync_effects = self.args.sync
 
-        if self.args.automatic or self.args.effect or self.args.color:
-            self.color_effect_handler.handle()
+        # if self.args.automatic or self.args.effect or self.args.color:
+            # self.color_effect_handler.handle()
 
-        if self.args.restore:
-            util.load_settings_from_file(self.args.verbose)
+        # if self.args.restore:
+            # util.load_settings_from_file(self.args.verbose)
 
-        if self.args.dpi:
-            self.dpi_setter.set()
+        # if self.args.dpi:
+            # self.dpi_setter.set()
 
-        if self.args.poll:
-            self.poll_rater_setter.set()
+        # if self.args.poll:
+            # self.poll_rater_setter.set()
 
-        if self.args.battery:
-            self.battery_setter.set()
+        # if self.args.battery:
+            # self.battery_setter.set()
 
-        if self.args.brightness:
-            self.brightness_handler.handle()
+        # if self.args.brightness:
+            # self.brightness_handler.handle()
 
-        if self.args.list_devices or self.args.list_devices_long or self.args.list_devices_short:
-            self.device_lister.list()
+        # if self.args.list_devices or self.args.list_devices_long or self.args.list_devices_short:
+            # self.device_lister.list()
 
         if self.args.version:
             self.version_handler.handle()
