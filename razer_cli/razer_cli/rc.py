@@ -36,13 +36,14 @@ class RazerCli:
     @staticmethod
     def init_create(device_manager: DeviceManager, args: Namespace, version: str) -> 'RazerCli':
         """ Factory method to have dependency injection available on the constructor """
-        color_effect_handler = ColorEffectHandler(device_manager, args, setter=ColorEffectSetter(device_manager, args))
-        brightness_handler = BrightnessHandler(device_manager, args, setter=BrightnessSetter(device_manager, args))
+        print("All initialization except version disabled")
+        color_effect_handler = None
+        brightness_handler = None
         version_handler = VersionHandler(device_manager, args, version=version)
-        device_lister = DeviceLister(device_manager, args)
-        dpi_setter = DpiSetter(device_manager, args)
-        poll_rater_setter = PollRateSetter(device_manager, args)
-        battery_setter = BatterySetter(device_manager, args)
+        device_lister = None
+        dpi_setter = None
+        poll_rater_setter = None
+        battery_setter = None
         return RazerCli(device_manager, args, version,
                         color_effect_handler, brightness_handler, version_handler,
                         device_lister,
