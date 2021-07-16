@@ -25,9 +25,10 @@ The following effects support a second argument by adding a comma followed by a 
     wave,[1-2]
         1 = right and 2 = left
         If not specified it will be chosen at random
-    multicolor,[0-∞]
+    multicolor,[0-∞]|[xpalette]
         0 = assign random colors for everything (does not consume colors)
         1-∞ = the number of colors to use from -c
+        xpalette = chooses 16 colors from the Xresources (e.g. usage with pywal)
         This defaults to 0
     The following effects do NOT consume colors:
         none, active, brightness, breath_random, spectrum, starlight_random, and wave If you only specify 1 effect it will be applied all zone
