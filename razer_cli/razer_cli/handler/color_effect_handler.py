@@ -10,7 +10,7 @@ class ColorEffectHandler(Handler):
         if self.args.color:
             color = parse_color(self.args.color, self.args)
         elif self.args.automatic:
-            color = [util.get_x_color(self.args.verbose)]
+            color = [util.get_x_color(verbose=self.args.verbose)]
         zones = parse_zones(self.args.zones)
         if not self.args.effect:
             effects = ['static']

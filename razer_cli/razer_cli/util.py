@@ -2,11 +2,9 @@ import json
 import os
 import subprocess
 from random import randint
+from typing import List
 
 from razer_cli.razer_cli import settings
-
-# Global
-X_COLOR = False
 
 
 def hex_to_decimal(hex_color):
@@ -17,24 +15,32 @@ def hex_to_decimal(hex_color):
     return [r, g, b]
 
 
-def get_x_color(verbose):
+def get_x_color(resource_name: str = "*color1",
+                verbose: bool = False) -> List[int]:
     # Get current primary color used by pywal, which is color1 in Xresources
     # Colors could also be read from ~/.cache/wal/colors.json, but this way it
     # doesn't depend on pywal, in case the X colors are set from a different origin
-    global X_COLOR
-    if X_COLOR:
-        return X_COLOR
-    output = subprocess.check_output(
-        "xrdb -query | grep \"*color1:\" | awk -F '#' '{print $2}'",
-        shell=True).strip()
+    output = subprocess.check_output("xrdb -query | grep \"" + resource_name +
+                                     ":\" | awk -F '#' '{print $2}'",
+                                     shell=True).strip()
 
     if not output:
-        X_COLOR = get_random_color_rgb()
+        print(
+            'Warning: Could not retrieve X color, returning random color instead'
+        )
+        return get_random_color_rgb()
     else:
-        X_COLOR = hex_to_decimal(output.decode())
-    if verbose:
-        print('Using', X_COLOR, "for X Color")
-    return X_COLOR
+        if verbose:
+            print(f'Returning {output} for X Color')
+        return hex_to_decimal(output.decode())
+
+
+def get_x_colors(verbose: bool = False) -> List[List[int]]:
+    """ Get all 16 X colors """
+    return [
+        get_x_color(resource_name=f"*color{i}", verbose=verbose)
+        for i in range(16)
+    ]
 
 
 def bytes_array_to_hex_array(b):
@@ -61,7 +67,8 @@ def rgb_support(device, zone=False, effect=False):
     if not device.capabilities[prop[0]]:
         # A Razer product without RGB? Does such a thing exist?
         return False
-    if zone in ['scroll_wheel', 'wheel'] and not prop[0] + '_' + zone in device.capabilities:
+    if zone in ['scroll_wheel', 'wheel'
+                ] and not prop[0] + '_' + zone in device.capabilities:
         prop.append('scroll')
     elif zone and not zone == 'generic':
         prop.append(zone)
@@ -83,7 +90,9 @@ def load_settings_from_file(verbose):
     if verbose:
         print('file:', path_and_file)
     if os.path.isfile(path_and_file):
-        print("Feature incomplete, here are the command(s) to restore the settings:")
+        print(
+            "Feature incomplete, here are the command(s) to restore the settings:"
+        )
         with open(path_and_file, 'r') as file:
             data = json.load(file)
         i = len(data) - 1
@@ -132,7 +141,8 @@ def load_settings_from_file(verbose):
                     opts_b = ""
                     for x in data[i]['brightness']:
                         if x not in b_override:
-                            opts_b += " " + x + " " + str(data[i]['brightness'][x])
+                            opts_b += " " + x + " " + str(
+                                data[i]['brightness'][x])
                     if opts_b != "":
                         opts += " -b " + opts_b
             if data[i].get('battery'):
@@ -143,13 +153,22 @@ def load_settings_from_file(verbose):
             print('   Settings for {}:'.format(data[i]['device_name']))
             print('     ', 'razer-cli', opts)
             i -= 1
-        print("*** Setting brightness as a effect overrides the brightness option.")
+        print(
+            "*** Setting brightness as a effect overrides the brightness option."
+        )
 
     else:
         print('There is no settings file:', path_and_file)
 
 
-def write_settings_to_file(device, effect=[], color=[], dpi="", brightness={}, poll="", zones=[], battery={}):
+def write_settings_to_file(device,
+                           effect=[],
+                           color=[],
+                           dpi="",
+                           brightness={},
+                           poll="",
+                           zones=[],
+                           battery={}):
     """ Save settings to a file for possible later retrieval """
 
     home_dir = os.path.expanduser("~")
@@ -170,8 +189,9 @@ def write_settings_to_file(device, effect=[], color=[], dpi="", brightness={}, p
     with open(path_and_file, 'r') as file:
         json_data = json.load(file)
         for item in json_data:
-            if ((item.get('serial') and item['serial'] == device.serial) or (
-                    not item.get('serial') and item['device_name'] == device.name)):
+            if ((item.get('serial') and item['serial'] == device.serial)
+                    or (not item.get('serial')
+                        and item['device_name'] == device.name)):
                 found_existing_settings = True
                 if not item.get('serial'):
                     item['serial'] = device.serial
@@ -228,7 +248,8 @@ def write_settings_to_file(device, effect=[], color=[], dpi="", brightness={}, p
 def print_manual(man):
     d_path = os.path.dirname(os.path.realpath(__file__)) + '/man_pages'
     if len(man) == 0:
-        return print("Manual entries exist for:", ', '.join(sorted(os.listdir(d_path))))
+        return print("Manual entries exist for:",
+                     ', '.join(sorted(os.listdir(d_path))))
     for i in man:
         f_path = d_path + '/' + i
         if os.path.isfile(f_path):
@@ -236,5 +257,5 @@ def print_manual(man):
                 print("Manual Entry for --{}:".format(i))
                 print(f.read())
         else:
-            print("No manual entries exist for", i,
-                  "try:\n  ", ', '.join(sorted(os.listdir(d_path))))
+            print("No manual entries exist for", i, "try:\n  ",
+                  ', '.join(sorted(os.listdir(d_path))))
