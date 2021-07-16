@@ -88,6 +88,9 @@ with the `-a` flag, after having executed `wal`: `razer-cli -a`
 Example in action 
 [here](https://github.com/LoLei/dotfiles/blob/master/exec-wal.sh).
 
+Another option is to use `razer-cli -e multicolor,xpalette`, which not only 
+uses a single color from pywal, but uses the entire 16 color palette.
+
 #### Other examples
 `$ razer-cli -e ripple -c ff0000`  
 `$ razer-cli -e static -c ffffff`  
