@@ -34,7 +34,7 @@ def parse_color(color, args: Namespace):
         # Use X colors as fallback if no color argument is set
         # TODO: Maybe also add argument to pull colors from
         # ~/.cache/wal.colors.jason
-        RGB.append(util.get_x_color(args.verbose))
+        RGB.append(util.get_x_color(verbose=args.verbose))
 
     return RGB
 
@@ -46,7 +46,7 @@ def parse_color_argument(color, args: Namespace):
         if rgb == "random":
             rgb = util.get_random_color_rgb()
         elif rgb == "x":
-            rgb = util.get_x_color(args.verbose)
+            rgb = util.get_x_color(verbose=args.verbose)
         else:
             rgb = util.hex_to_decimal(rgb)
     else:

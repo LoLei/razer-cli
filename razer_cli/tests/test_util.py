@@ -66,6 +66,14 @@ class TestUtil(unittest.TestCase):
         self.assertTrue(0 <= green <= 255)
         self.assertTrue(0 <= blue <= 255)
 
+    def test_x_color(self) -> None:
+        color = util.get_x_color()
+        self.assertEqual(3, len(color))
+
+    def test_x_colors(self) -> None:
+        colors = util.get_x_colors()
+        self.assertEqual(16, len(colors))
+
 
 if __name__ == "__main__":
     unittest.main()

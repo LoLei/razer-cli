@@ -76,7 +76,7 @@ class ColorEffectSetter(Setter):
                         color = parse_color(
                             util.bytes_array_to_hex_array(getattr(prop, 'colors')), self.args)
                     except:
-                        color = [util.get_x_color(self.args.verbose)]
+                        color = [util.get_x_color(verbose=self.args.verbose)]
                     c_used = 0
                     if self.args.verbose:
                         debug_msg[zone].append(["No color given, using:", color])
