@@ -212,8 +212,15 @@ class ColorEffectSetter(Setter):
                     if self.args.verbose:
                         debug_msg[zone].append(["Setting", effect, 'to', b])
                 elif effect == 'multicolor':
+                    xpalette = False
                     if len(arg) > 0:
-                        used = int(arg[0])
+                        try:
+                            # This should be renamed from 'used'
+                            # Someone contributed this so I CBA'd to change it
+                            used = int(arg[0])
+                        except ValueError:
+                            used = 0
+                            xpalette = True
                     else:
                         used = 0
                     while len(color) < c_used + used:
@@ -221,8 +228,11 @@ class ColorEffectSetter(Setter):
                     cols = prop.advanced.cols
                     rows = prop.advanced.rows
                     if used == 0:
-                        colors_to_dist = [
-                            util.get_random_color_rgb() for _ in range(cols * rows)]
+                        if xpalette:
+                            colors_to_dist = util.get_x_colors(verbose=self.args.verbose)
+                        else:
+                            colors_to_dist = [
+                                util.get_random_color_rgb() for _ in range(cols * rows)]
                     else:
                         colors_to_dist = []
                         end = len(color)
