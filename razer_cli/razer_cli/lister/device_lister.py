@@ -46,9 +46,11 @@ class DeviceLister(Lister):
                     print("   battery:")
                     print("      charge:", device.battery_level)
                     print("      charging:", device.is_charging)
-                    print("      low threshold:",
-                          device.get_low_battery_threshold(), '%')
-                    print("      idle delay", device.get_idle_time(), 'seconds')
+                    if device.has('get_low_battery_threshold'):
+                        print("      low threshold:",
+                              device.get_low_battery_threshold(), '%')
+                    if device.has('get_idle_time'):
+                        print("      idle delay", device.get_idle_time(), 'seconds')
 
                 for i in settings.ZONES:
                     # Settings
