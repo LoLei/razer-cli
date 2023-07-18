@@ -14,9 +14,11 @@ class BatterySetter(Setter):
                         print(device.name, 'battery:')
                         print("   charge:", device.battery_level)
                         print("   charging:", device.is_charging)
-                        print("   low threshold:",
-                              device.get_low_battery_threshold(), '%')
-                        print("   idle delay", device.get_idle_time(), 'seconds')
+                        if device.has('get_low_battery_threshold'):
+                            print("   low threshold:",
+                                device.get_low_battery_threshold(), '%')
+                        if device.has('get_idle_time'):
+                            print("   idle delay", device.get_idle_time(), 'seconds')
                     else:
                         i = 0
                         stop = len(self.args.battery)
@@ -24,14 +26,16 @@ class BatterySetter(Setter):
                         while i < stop:
                             if self.args.battery[i] == "low" and stop > i + 1:
                                 bat['low'] = int(self.args.battery[i + 1])
-                                device.set_low_battery_threshold(bat['low'])
-                                if self.args.verbose:
+                                if device.has("set_low_battery_threshold"):
+                                    device.set_low_battery_threshold(bat['low'])
+                                if self.args.verbose and device.has("get_low_battery_threshold"):
                                     print(device.name, 'low battery =',
                                           device.get_low_battery_threshold(), '%')
                             elif self.args.battery[i] == "idle" and stop > i + 1:
                                 bat['idle'] = int(self.args.battery[i + 1])
-                                device.set_idle_time(bat['idle'])
-                                if self.args.verbose:
+                                if device.has("set_idle_time"):
+                                    device.set_idle_time(bat['idle'])
+                                if self.args.verbose and device.has("get_idle_time"):
                                     print(device.name, 'idle delay =',
                                           device.get_idle_time(), 'seconds')
                             i += 1
