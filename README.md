@@ -1,6 +1,6 @@
 # razer-cli
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 Command line interface for controlling Razer devices on Linux
 
@@ -147,6 +147,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://www.ifohancroft.com"><img src="https://avatars0.githubusercontent.com/u/3461282?v=4?s=100" width="100px;" alt="IFo Hancroft"/><br /><sub><b>IFo Hancroft</b></sub></a><br /><a href="https://github.com/LoLei/razer-cli/issues?q=author%3Aifohancroft" title="Bug reports">🐛</a> <a href="#userTesting-ifohancroft" title="User Testing">📓</a> <a href="https://github.com/LoLei/razer-cli/commits?author=ifohancroft" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/GM-Script-Writer-62850"><img src="https://avatars2.githubusercontent.com/u/564653?v=4?s=100" width="100px;" alt="GM-Script-Writer-62850"/><br /><sub><b>GM-Script-Writer-62850</b></sub></a><br /><a href="https://github.com/LoLei/razer-cli/commits?author=GM-Script-Writer-62850" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/sk8ersteve"><img src="https://avatars.githubusercontent.com/u/10476999?v=4?s=100" width="100px;" alt="Stephen Thomas-Dorin"/><br /><sub><b>Stephen Thomas-Dorin</b></sub></a><br /><a href="https://github.com/LoLei/razer-cli/commits?author=sk8ersteve" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/romainrichard"><img src="https://avatars.githubusercontent.com/u/498307?v=4?s=100" width="100px;" alt="Romain Richard"/><br /><sub><b>Romain Richard</b></sub></a><br /><a href="https://github.com/LoLei/razer-cli/commits?author=romainrichard" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

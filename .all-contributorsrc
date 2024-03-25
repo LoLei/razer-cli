@@ -51,6 +51,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "romainrichard",
+      "name": "Romain Richard",
+      "avatar_url": "https://avatars.githubusercontent.com/u/498307?v=4",
+      "profile": "https://github.com/romainrichard",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
