@@ -207,7 +207,7 @@ class ColorEffectSetter(Setter):
                     if len(arg) == 0:
                         b = True
                     else:
-                        b = bool(arg[0])
+                        b = bool(int(arg[0]))
                     prop.active = b
                     if self.args.verbose:
                         debug_msg[zone].append(["Setting", effect, 'to', b])
