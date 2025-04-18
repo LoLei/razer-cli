@@ -127,6 +127,15 @@ Here's a showcase of that effect:
 * [`xrdb`](https://www.archlinux.org/packages/extra/x86_64/xorg-xrdb/)
   * Also available on most distros.
 
+## Publishing a new version
+
+- Edit and commit the existing version numbers in `razer_cli/razer_cli/main.py` and `setup.py`.
+- Create new tag/release on GitHub.
+- Build and publish package via:
+  - `pip install --upgrade setuptools wheel twine`
+  - `python setup.py sdist bdist_wheel`
+  - `twine upload dist/*`
+
 ## Disclaimer
 Not all devices have been tested, but basic effects should work everywhere. Some guesswork is being done as to what capabilities are supported on specific devices. If you need more advanced configuration, consider using the GUIs [Polychromatic](https://github.com/polychromatic/polychromatic/), [RazerGenie](https://github.com/z3ntu/RazerGenie) or [RazerCommander](https://gitlab.com/gabmus/razerCommander) which have specific implementations for most devices.
   
