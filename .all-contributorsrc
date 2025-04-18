@@ -60,6 +60,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "justbispo",
+      "name": "justbispo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/38961424?v=4",
+      "profile": "https://github.com/justbispo",
+      "contributions": [
+        "platform"
+      ]
     }
   ],
   "contributorsPerLine": 7,
