@@ -31,6 +31,17 @@ cd razer-cli
 pip install . --user
 ```
 
+If you're using Arch Linux, you can install the [`razer-cli`](https://aur.archlinux.org/packages/razer-cli) AUR package:
+
+```
+sudo pacman -S --needed base-devel
+git clone https://aur.archlinux.org/razer-cli.git
+cd razer-cli
+makepkg -si
+```
+
+Or install it through an AUR helper if you're using one.
+
 ## Usage
 ```
 $ razer-cli -h
