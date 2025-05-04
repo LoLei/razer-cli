@@ -69,6 +69,15 @@
       "contributions": [
         "platform"
       ]
+    },
+    {
+      "login": "Ce1er",
+      "name": "Ce1er",
+      "avatar_url": "https://avatars.githubusercontent.com/u/114954714?v=4",
+      "profile": "https://github.com/Ce1er",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
