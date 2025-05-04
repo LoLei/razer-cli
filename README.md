@@ -116,7 +116,7 @@ argument is missing, in the future.
 
 #### Effects
 Effects are listed in
-[`razer_cli/settings.py`](https://github.com/LoLei/razer-cli/blob/master/razer_cli/settings.py).
+[`razer_cli/razer_cli/settings.py`](https://github.com/LoLei/razer-cli/blob/master/razer_cli/razer_cli/settings.py).
 The effects that are supported per device can be listed with `razer-cli -l[l]`.
 Some of the built-in effects or not implemented yet. If such an effect is
 chosen, a notice will be logged. There are also custom effects that do not exist
