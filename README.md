@@ -4,6 +4,10 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 Command line interface for controlling Razer devices on Linux
 
+## 📢 Maintainers wanted 📢
+
+Please reach out [here](https://github.com/LoLei/razer-cli/discussions/90) if you're intersted in becoming a maintainer.
+
 ## About
 With this command line interface you can configure your Razer peripherals, such
 as keyboard and mouse, set their colors and effects, etc.
