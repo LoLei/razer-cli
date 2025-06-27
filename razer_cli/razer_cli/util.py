@@ -62,7 +62,7 @@ def get_random_color_rgb():
     return [r, g, b]
 
 
-def rgb_support(device, zone=False, effect=False):
+def rgb_support(device, zone=None, effect=None):
     prop = ["lighting"]
     if not device.capabilities[prop[0]]:
         # A Razer product without RGB? Does such a thing exist?
@@ -71,11 +71,11 @@ def rgb_support(device, zone=False, effect=False):
                 ] and not prop[0] + '_' + zone in device.capabilities:
         prop.append('scroll')
     elif zone and not zone == 'generic':
-        prop.append(zone)
+        prop.append(str(zone))
     if effect == 'advanced' or effect in settings.CUSTOM_EFFECTS:
         prop.append('led_matrix')
     elif effect:
-        prop.append(effect)
+        prop.append(str(effect))
     prop = '_'.join(prop)
     if prop in device.capabilities and device.capabilities[prop]:
         return True
