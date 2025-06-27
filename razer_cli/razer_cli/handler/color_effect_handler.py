@@ -6,6 +6,8 @@ from razer_cli.razer_cli.parser.zone_parser import parse_zones
 
 class ColorEffectHandler(Handler):
     def handle(self):
+        assert self.setter is not None
+
         color = []
         if self.args.color:
             color = parse_color(self.args.color, self.args)
