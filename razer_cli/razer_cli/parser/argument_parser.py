@@ -80,6 +80,15 @@ def read_args(input_args: List[str]) -> argparse.Namespace:
     parser.add_argument("--version",
                         help="Print version number",
                         action="store_true")
+    
+    subparsers = parser.add_subparsers()
+    manual_alias = subparsers.add_parser("help")
+    manual_alias.add_argument(
+        "manual",
+        nargs="*",
+        help="Print help details for given feature(s)",
+        action="store",
+    )
 
     if len(input_args) < 1:
         parser.print_help()
