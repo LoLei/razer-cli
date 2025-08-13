@@ -6,7 +6,7 @@ from razer_cli.razer_cli.setter.setter import Setter
 
 class BatterySetter(Setter):
 
-    def set(self):
+    def set(self, **unused):
         for device in self.device_manager.devices:
             if (self.args.device and (device.name in self.args.device or device.serial in self.args.device)) or (not self.args.device):
                 if device.has("battery"):

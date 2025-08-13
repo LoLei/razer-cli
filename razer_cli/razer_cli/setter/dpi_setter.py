@@ -5,7 +5,7 @@ from razer_cli.razer_cli.setter.setter import Setter
 
 
 class DpiSetter(Setter):
-    def set(self):
+    def set(self, **unused):
         # Iterate over each device and set DPI
         for device in self.device_manager.devices:
             # If -d argument is set, only set those devices
