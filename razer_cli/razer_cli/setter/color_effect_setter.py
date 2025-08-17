@@ -26,8 +26,7 @@ class ColorEffectSetter(Setter):
         #    pulsate, spectrum, starlight_dual, starlight_random,
         #    starlight_single, static, wave
 
-        if self.args.verbose:
-            debug_msg = {}
+        debug_msg = {}
         og_color_len = len(color)
         c_used = 0
         i = 0

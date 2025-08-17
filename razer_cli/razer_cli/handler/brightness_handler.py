@@ -3,6 +3,8 @@ from razer_cli.razer_cli.handler.handler import Handler
 
 class BrightnessHandler(Handler):
     def handle(self):
+        assert self.setter is not None
+
         i = len(self.args.brightness)
         if i == 1 and self.args.brightness[0].isnumeric():
             self.args.brightness = {"all": self.args.brightness[0]}
