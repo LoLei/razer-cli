@@ -177,7 +177,7 @@ def write_settings_to_file(device,
     path_and_file = os.path.join(home_dir, dir_name, file_name)
 
     # Handle non-existing file
-    if not os.path.isfile(path_and_file):
+    if not os.path.isfile(path_and_file) or os.path.getsize(path_and_file) == 0:
         os.makedirs(os.path.dirname(path_and_file), exist_ok=True)
         print("creating path and file")
         a = []
