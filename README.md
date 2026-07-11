@@ -1,6 +1,6 @@
 # razer-cli
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 Command line interface for controlling Razer devices on Linux
 
@@ -177,6 +177,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Ce1er"><img src="https://avatars.githubusercontent.com/u/114954714?v=4?s=100" width="100px;" alt="Ce1er"/><br /><sub><b>Ce1er</b></sub></a><br /><a href="https://github.com/LoLei/razer-cli/commits?author=Ce1er" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/CjMullins87"><img src="https://avatars.githubusercontent.com/u/49509061?v=4?s=100" width="100px;" alt="Chris"/><br /><sub><b>Chris</b></sub></a><br /><a href="https://github.com/LoLei/razer-cli/commits?author=CjMullins87" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/arthur-canga"><img src="https://avatars.githubusercontent.com/u/16433188?v=4?s=100" width="100px;" alt="Arthur Canga"/><br /><sub><b>Arthur Canga</b></sub></a><br /><a href="https://github.com/LoLei/razer-cli/commits?author=arthur-canga" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
