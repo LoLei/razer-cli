@@ -87,6 +87,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "arthur-canga",
+      "name": "Arthur Canga",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16433188?v=4",
+      "profile": "https://github.com/arthur-canga",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
