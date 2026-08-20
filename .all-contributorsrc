@@ -96,6 +96,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "garthdw",
+      "name": "Garth de Wet",
+      "avatar_url": "https://avatars.githubusercontent.com/u/383331?v=4",
+      "profile": "https://dewet.dev",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
